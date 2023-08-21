@@ -1,0 +1,5 @@
+defaults:
+  - inspector: prod
+  - _self_
+app:
+  logging_level: INFO

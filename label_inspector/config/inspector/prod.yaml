@@ -1,0 +1,5 @@
+script_names: script_names.txt
+confusables: confusables.json
+grapheme_confusables: grapheme_confusables.json
+fonts: fonts
+lazy_loading: true

@@ -1,0 +1,89 @@
+from __future__ import annotations
+from typing import Optional, List, TYPE_CHECKING
+
+from label_inspector.common import myunicode
+
+from .analysis_framework import AnalysisBase, analysis_object, field, agg_only, agg_all
+from .char_analysis import CharAnalysis
+
+if TYPE_CHECKING:
+    from .label_analysis import LabelAnalysis
+
+
+@analysis_object
+class GraphemeAnalysis(AnalysisBase):
+    '''
+    Basic analysis of a grapheme (no confusables).
+    '''
+
+    def __init__(self, grapheme: str, parent):
+        self.grapheme = grapheme
+        self.root: LabelAnalysis = parent.root
+
+    @field
+    def value(self) -> str:
+        return self.grapheme
+
+    @field
+    def _chars_untruncated(self) -> List[CharAnalysis]:
+        """
+        Untruncated char analysis.
+        """
+        return [CharAnalysis(char, self) for char in self.grapheme]
+
+    @field
+    def _single_char(self) -> Optional[CharAnalysis]:
+        """
+        If the grapheme is a single char, return that char's analysis.
+        """
+        return agg_only(self._chars_untruncated)
+
+    @field
+    def chars(self) -> List[CharAnalysis]:
+        """
+        Truncated char analysis.
+        """
+        return self._chars_untruncated[:self.root.config.truncate_chars]
+
+    @field
+    def name(self) -> str:
+        """
+        Name of the grapheme.
+        Emoji sequence, single-character name or Combined Character.
+        """
+        return myunicode.emoji_zwj_sequence_name(self.grapheme) or \
+            myunicode.emoji_sequence_name(self.grapheme) or \
+            getattr(self._single_char, 'name', 'Combined Character')
+
+    @field
+    def codepoint(self) -> Optional[str]:
+        return getattr(self._single_char, 'codepoint', None)
+
+    @field
+    def link(self) -> Optional[str]:
+        if self.type == 'emoji':
+            return self.root.i.f.emoji_link(self.grapheme)
+        else:
+            return getattr(self._single_char, 'link', None) or \
+                   self.root.i.f.multi_char_link(self.grapheme)
+
+    @field
+    def script(self) -> str:
+        scr = myunicode.script_of(self.grapheme)
+        return scr if scr is not None else 'Combined'
+
+    @field
+    def type(self) -> str:
+        if myunicode.is_emoji(self.grapheme):
+            return 'emoji'
+
+        cls = agg_all([c.type for c in self._chars_untruncated])
+
+        return cls or 'special'
+
+    @field
+    def font_support_all_os(self) -> bool:
+        if self.type == 'emoji':
+            return self.root.i.f.font_support.all_os(self.grapheme)
+        else:
+            return all(self.root.i.f.font_support.all_os(c) for c in self.grapheme)
