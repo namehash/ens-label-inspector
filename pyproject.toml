@@ -2,8 +2,12 @@
 name = "label-inspector"
 version = "0.2.0"
 readme = "README.md"
+license = "MIT"
 description = ""
-authors = []
+authors = ["NameHash Team <devops@namehash.io>"]
+maintainers = ["NameHash Team <devops@namehash.io>"]
+homepage = "https://github.com/namehash/ens-label-inspector"
+repository = "https://github.com/namehash/ens-label-inspector"
 packages = [
     { include = "label_inspector" }
 ]
