@@ -1,4 +1,4 @@
-from typing import Optional, List, Union, Tuple, Dict
+from typing import Optional, List, Union
 from pydantic import BaseModel, Field
 from ens_normalize import DisallowedSequenceType, CurableSequenceType, NormalizableSequenceType
 

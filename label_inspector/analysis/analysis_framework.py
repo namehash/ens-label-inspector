@@ -37,11 +37,11 @@ How to:
             self.parent = parent
             # the top-level AnalysisBase object
             self.root = parent.root
-        
+
         @field
         def my_field(self):
             # use self.parent.some_field to refer to a field of the parent
-    
+
     @analysis_object
     class MyParent(AnalysisBase):
         @field

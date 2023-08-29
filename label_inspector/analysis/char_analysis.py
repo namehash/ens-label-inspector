@@ -28,7 +28,7 @@ class CharAnalysis(AnalysisBase):
     @field
     def name(self) -> str:
         return myunicode.name(self._char, f'Unknown character in {self.script} script')
-    
+
     @field
     def codepoint(self) -> str:
         return self.root.i.f.codepoint_hex(self._char)
@@ -39,7 +39,7 @@ class CharAnalysis(AnalysisBase):
             return self.root.i.f.emoji_link(self._char)
         else:
             return self.root.i.f.char_link(self._char)
-    
+
     @field
     def type(self) -> str:
         # Refers to this char's parent grapheme to detect ZWJs in emoji sequences.

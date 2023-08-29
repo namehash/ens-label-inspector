@@ -198,12 +198,12 @@ class LabelAnalysis(AnalysisBase):
     def dns_hostname_support(self) -> Optional[bool]:
         if self.is_response_model_normalized():
             return self._punycode_analysis.dns_support
-        
+
     @field
     def punycode_compatibility(self) -> Optional[str]:
         if self.is_response_model_normalized():
             return self._punycode_analysis.compatibility.name
-        
+
     @field
     def punycode_encoding(self) -> Optional[str]:
         if self.is_response_model_normalized():

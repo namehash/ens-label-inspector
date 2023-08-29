@@ -1,10 +1,10 @@
 import logging
-from typing import Union, List
+from typing import List
 from fastapi import FastAPI
 
 from label_inspector.config import initialize_inspector_config
 from label_inspector.inspector import Inspector
-from label_inspector.models import BatchInspectorLabel, InspectorLabel, InspectorResultNormalized, InspectorResultUnnormalized, InspectorResult
+from label_inspector.models import BatchInspectorLabel, InspectorLabel, InspectorResult
 
 
 logger = logging.getLogger('label_inspector')
@@ -27,13 +27,7 @@ def analyse_label(label: str, request_body: InspectorLabel):
                                      truncate_confusables=request_body.truncate_confusables,
                                      truncate_graphemes=request_body.truncate_graphemes,
                                      truncate_chars=request_body.truncate_chars)
-
-    if result['status'] == 'normalized':
-        model = InspectorResultNormalized
-    else:
-        model = InspectorResultUnnormalized
-
-    return model(**result)
+    return result
 
 
 @app.post("/")
