@@ -5,18 +5,16 @@ trying a default constructor first, then using the production config.
 '''
 
 import shutil
-from hydra import compose, initialize_config_module
 
 import label_inspector.inspector
 # if there are modules not imported by inspector, import them here
 
 from label_inspector.common import pickle_cache
+from label_inspector.config import initialize_inspector_config
 
 
 def main():
-    with initialize_config_module(version_base=None, config_module='inspector_conf'):
-        config = compose(config_name='prod_config')
-
+    with initialize_inspector_config('prod_config') as config:
         print('Removing old cache')
         shutil.rmtree(pickle_cache.CACHE_DIR, ignore_errors=True)
 
