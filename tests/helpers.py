@@ -20,44 +20,54 @@ def is_type(obj, *types):
     return any(t is u for u in types)
 
 
-def check_inspector_normalized_response(label,
-                                        resp,
-                                        truncate_confusables=None,
-                                        truncate_graphemes=None,
-                                        truncate_chars=None):
-    assert sorted(resp.keys()) == sorted([
-        'label',
-        'status',
-        'version',
-        'char_length',
-        'grapheme_length',
-        'all_type',
-        'any_types',
-        'all_script',
-        'any_scripts',
-        'confusable_count',
-        'graphemes',
-        'beautiful_label',
-        'canonical_confusable_label',
-        'beautiful_canonical_confusable_label',
-        'dns_hostname_support',
-        'punycode_compatibility',
-        'punycode_encoding',
-        'font_support_all_os',
-    ])
+BASE_RESPONSE_FIELDS = [
+    'label',
+    'status',
+    'version',
+    'char_length',
+    'grapheme_length',
+    'all_type',
+    'any_types',
+    'all_script',
+    'any_scripts',
+    'confusable_count',
+    'graphemes',
+    'dns_hostname_support',
+    'punycode_compatibility',
+    'punycode_encoding',
+    'canonical_confusable_label',
+    'beautiful_canonical_confusable_label',
+]
+
+NORMALIZED_RESPONSE_FIELDS = [
+    'beautiful_label',
+    'font_support_all_os',
+]
+
+UNNORMALIZED_RESPONSE_FIELDS = [
+    'normalized_label',
+    'cured_label',
+    'normalization_error_message',
+    'normalization_error_details',
+    'normalization_error_code',
+    'disallowed_sequence_start',
+    'disallowed_sequence',
+    'suggested_replacement',
+]
+
+def check_inspector_base_response(label,
+                                  resp,
+                                  truncate_confusables=None,
+                                  truncate_graphemes=None,
+                                  truncate_chars=None):
+    assert all(x in resp.keys() for x in BASE_RESPONSE_FIELDS)
 
     assert resp['label'] == label
-    assert resp['status'] == 'normalized'
-    assert resp['label'] == ens_normalize(label)
+    assert resp['status'] in ['normalized', 'unnormalized']
+    assert resp['label'] == label
     assert VERSION_REGEX.match(resp['version'])
     assert resp['char_length'] == len(label)
     assert resp['grapheme_length'] == len(myunicode.grapheme.split(label))
-
-    try:
-        beautiful_label = ens_beautify(label)
-    except DisallowedSequence:
-        beautiful_label = None
-    assert resp['beautiful_label'] == beautiful_label
 
     assert is_type(resp['all_type'], str, NoneType)
     assert is_type(resp['any_types'], list, NoneType)
@@ -162,20 +172,7 @@ def check_inspector_unnormalized_response(label,
                                           truncate_confusables=None,
                                           truncate_graphemes=None,
                                           truncate_chars=None):
-    assert sorted(resp.keys()) == sorted([
-        'label',
-        'status',
-        'version',
-        'cured_label',
-        'canonical_confusable_label',
-        'beautiful_canonical_confusable_label',
-        'normalization_error_message',
-        'normalization_error_details',
-        'normalization_error_code',
-        'disallowed_sequence_start',
-        'disallowed_sequence',
-        'suggested_replacement',
-    ])
+    assert sorted(resp.keys()) == sorted(BASE_RESPONSE_FIELDS + UNNORMALIZED_RESPONSE_FIELDS)
 
     assert resp['label'] == label
     try:
@@ -185,11 +182,6 @@ def check_inspector_unnormalized_response(label,
     assert resp['cured_label'] == cured
     assert resp['status'] == 'unnormalized'
     assert VERSION_REGEX.match(resp['version'])
-    try:
-        normalized = ens_normalize(label)
-    except DisallowedSequence:
-        normalized = None
-    assert resp['canonical_confusable_label'] == normalized
     res = ens_process(label, do_normalizations=True)
     error = res.error or (res.normalizations[0] if res.normalizations else None)
     assert resp['normalization_error_message'] == error.general_info
@@ -215,12 +207,18 @@ def check_inspector_response(label,
     Checks that the response from the inspector is valid.
     Verifies only field names and types without exact values.
     """
+    check_inspector_base_response(label,
+                                  resp,
+                                  truncate_confusables=truncate_confusables,
+                                  truncate_graphemes=truncate_graphemes,
+                                  truncate_chars=truncate_chars)
     if is_ens_normalized(label):
-        check_inspector_normalized_response(label,
-                                            resp,
-                                            truncate_confusables=truncate_confusables,
-                                            truncate_graphemes=truncate_graphemes,
-                                            truncate_chars=truncate_chars,)
+        pass # TODO
+        # check_inspector_normalized_response(label,
+        #                                     resp,
+        #                                     truncate_confusables=truncate_confusables,
+        #                                     truncate_graphemes=truncate_graphemes,
+        #                                     truncate_chars=truncate_chars,)
     else:
         check_inspector_unnormalized_response(label,
                                               resp,

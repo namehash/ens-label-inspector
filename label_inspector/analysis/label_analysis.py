@@ -111,19 +111,13 @@ class LabelAnalysis(AnalysisBase):
         else:
             return 'unnormalized'
 
-    # \ COMMON
-
-    # / NORMALIZED
-
     @field
     def char_length(self) -> Optional[int]:
-        if self.is_response_model_normalized():
-            return len(self.config.label)
+        return len(self.config.label)
 
     @field
     def grapheme_length(self) -> Optional[int]:
-        if self.is_response_model_normalized():
-            return len(self._raw_graphemes)
+        return len(self._raw_graphemes)
 
     @field
     def _graphemes_untruncated(self) -> List[GraphemeWithConfusablesAnalysis]:
@@ -138,126 +132,88 @@ class LabelAnalysis(AnalysisBase):
         """
         Truncated grapheme analysis.
         """
-        if self.is_response_model_normalized():
-            return self._graphemes_untruncated[:self.config.truncate_graphemes]
+        return self._graphemes_untruncated[:self.config.truncate_graphemes]
 
     # Aggregates (using untruncated grapheme analysis)
 
     @field
     def all_type(self) -> Optional[str]:
-        if self.is_response_model_normalized():
-            return agg_all([g.type for g in self._graphemes_untruncated])
+        return agg_all([g.type for g in self._graphemes_untruncated])
 
     @field
     def any_types(self) -> Optional[List[str]]:
-        if self.is_response_model_normalized():
-            return agg_any([g.type for g in self._graphemes_untruncated])
+        return agg_any([g.type for g in self._graphemes_untruncated])
 
     @field
     def all_script(self) -> Optional[str]:
-        if self.is_response_model_normalized():
-            scripts = self.any_scripts
-            had_inherited = False
-            had_common = False
-            strong_script = None
-            for script in scripts:
-                if script in ('Unknown', 'Combined'):
-                    # handles case 1
-                    return None
-                elif script == 'Inherited':
-                    had_inherited = True
-                elif script == 'Common':
-                    had_common = True
-                elif strong_script is None:
-                    strong_script = script
-                elif strong_script != script:
-                    # handles case 4
-                    return None
-            # handles cases 2 and 3
-            return strong_script or ('Common' if had_common else None) or ('Inherited' if had_inherited else None)
+        scripts = self.any_scripts
+        had_inherited = False
+        had_common = False
+        strong_script = None
+        for script in scripts:
+            if script in ('Unknown', 'Combined'):
+                # handles case 1
+                return None
+            elif script == 'Inherited':
+                had_inherited = True
+            elif script == 'Common':
+                had_common = True
+            elif strong_script is None:
+                strong_script = script
+            elif strong_script != script:
+                # handles case 4
+                return None
+        # handles cases 2 and 3
+        return strong_script or ('Common' if had_common else None) or ('Inherited' if had_inherited else None)
 
     @field
     def any_scripts(self) -> Optional[List[str]]:
-        if self.is_response_model_normalized():
-            return agg_any([g.script for g in self._graphemes_untruncated])
+        return agg_any([g.script for g in self._graphemes_untruncated])
 
     @field
     def confusable_count(self) -> int:
-        if self.is_response_model_normalized():
-            return sum([1 for g in self._graphemes_untruncated if g._is_confusable])
-
-    @field
-    def beautiful_label(self) -> Optional[str]:
-        """
-        ENSIP beautified label.
-        """
-        if self.is_response_model_normalized():
-            return self._ens_process_result.beautified
+        return sum([1 for g in self._graphemes_untruncated if g._is_confusable])
 
     @field
     def dns_hostname_support(self) -> Optional[bool]:
-        if self.is_response_model_normalized():
-            return self._punycode_analysis.dns_support
+        return self._punycode_analysis.dns_support
 
     @field
     def punycode_compatibility(self) -> Optional[str]:
-        if self.is_response_model_normalized():
-            return self._punycode_analysis.compatibility.name
+        return self._punycode_analysis.compatibility.name
 
     @field
     def punycode_encoding(self) -> Optional[str]:
-        if self.is_response_model_normalized():
-            return self._punycode_analysis.encoded
-
-    @field
-    def font_support_all_os(self) -> Optional[bool]:
-        if self.is_response_model_normalized():
-            return all(g.font_support_all_os for g in self._graphemes_untruncated)
-
-    # \ NORMALIZED
-
-    # / NORMALIZED and UNNORMALIZED
+        return self._punycode_analysis.encoded
 
     @field
     def canonical_confusable_label(self) -> Optional[str]:
         """
-        For NormalizedResult:
         Input label where all confusables are replaced
         with their canonicals and run through ENSIP normalization.
         Is `null` if:
         * input label is not confusable
         * at least one confusable does not have a canonical
         * result cannot be normalized
-
-        For UnnormalizedResult:
-        Properly ENSIP normalized version of the input label.
-        Is `null` if the input label cannot be normalized.
         """
-        if self.is_response_model_normalized():
-            if self.confusable_count == 0:
+        if self.confusable_count == 0:
+            return None
+
+        canonicals = []
+        for grapheme in self._graphemes_untruncated:
+            if not grapheme._is_confusable:
+                canonicals.append(grapheme.value)
+            elif grapheme.confusables_canonical is None:
                 return None
+            else:
+                canonicals.append(grapheme.confusables_canonical.value)
 
-            canonicals = []
-            for grapheme in self._graphemes_untruncated:
-                if not grapheme._is_confusable:
-                    canonicals.append(grapheme.value)
-                elif grapheme.confusables_canonical is None:
-                    return None
-                else:
-                    canonicals.append(grapheme.confusables_canonical.value)
+        canonical_label = ''.join(canonicals)
 
-            canonical_label = ''.join(canonicals)
-
-            try:
-                return ens_normalize(canonical_label)
-            except DisallowedSequence:
-                return None
-
-        elif self.is_response_model_unnormalized():
-            try:
-                return ens_normalize(self.label)
-            except DisallowedSequence:
-                return None
+        try:
+            return ens_normalize(canonical_label)
+        except DisallowedSequence:
+            return None
 
     @field
     def beautiful_canonical_confusable_label(self) -> Optional[str]:
@@ -276,9 +232,31 @@ class LabelAnalysis(AnalysisBase):
             # should never happen as canonical_confusable_label is already normalized
             return None
 
-    # \ NORMALIZED and UNNORMALIZED
+    # \ COMMON
+
+    # / NORMALIZED
+
+    @field
+    def beautiful_label(self) -> Optional[str]:
+        """
+        ENSIP beautified label.
+        """
+        if self.is_response_model_normalized():
+            return self._ens_process_result.beautified
+
+    @field
+    def font_support_all_os(self) -> Optional[bool]:
+        if self.is_response_model_normalized():
+            return all(g.font_support_all_os for g in self._graphemes_untruncated)
+
+    # \ NORMALIZED
 
     # / UNNORMALIZED
+
+    @field
+    def normalized_label(self) -> Optional[str]:
+        if self.is_response_model_unnormalized():
+            return self._ens_process_result.normalized
 
     @field
     def cured_label(self) -> Optional[str]:
