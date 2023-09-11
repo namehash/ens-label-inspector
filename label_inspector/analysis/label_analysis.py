@@ -10,6 +10,7 @@ from .char_analysis import CharAnalysis
 
 from label_inspector.common.punycode import puny_analysis, PunycodeAnalysisResult
 from label_inspector.common import myunicode
+from label_inspector.components.font_support import aggregate_font_support
 
 if TYPE_CHECKING:
     from label_inspector.inspector import Inspector
@@ -232,6 +233,10 @@ class LabelAnalysis(AnalysisBase):
             # should never happen as canonical_confusable_label is already normalized
             return None
 
+    @field
+    def font_support_all_os(self) -> Optional[bool]:
+        return aggregate_font_support([g.font_support_all_os for g in self._graphemes_untruncated])
+
     # \ COMMON
 
     # / NORMALIZED
@@ -243,11 +248,6 @@ class LabelAnalysis(AnalysisBase):
         """
         if self.is_response_model_normalized():
             return self._ens_process_result.beautified
-
-    @field
-    def font_support_all_os(self) -> Optional[bool]:
-        if self.is_response_model_normalized():
-            return all(g.font_support_all_os for g in self._graphemes_untruncated)
 
     # \ NORMALIZED
 
