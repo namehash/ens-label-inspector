@@ -249,13 +249,12 @@ def test_inspector_truncate_chars_in_graphemes(prod_test_client):
 
 
 def test_inspector_truncate_chars_in_graphemes2(prod_test_client):
-    label = '00000000000000000000000000000000000000ᴅᴇᴀᴅ.eth'
+    label = '00000000000000000000000000000000000000ᴅᴇᴀᴅ'
     response = prod_test_client.post('/', json={'label': label, 'truncate_chars': 0})
     assert response.status_code == 200
     json = response.json()
     check_inspector_response(label, json, truncate_chars=0)
-    assert 'graphemes' not in json
-    # unnormalized response model is used so no graphemes are returned
+    assert [len(g['chars']) for g in json['graphemes']] == [0] * len(label)
 
 
 def test_inspector_truncate_graphemes_and_chars(prod_test_client):

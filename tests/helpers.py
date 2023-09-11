@@ -141,7 +141,6 @@ def check_inspector_base_response(label,
             assert len(grapheme['chars']) > 0
 
     all_chars = [c for grapheme in resp['graphemes'] for c in grapheme['chars']]
-    assert len(resp['graphemes']) <= len(all_chars)
     # apply chars in grapheme truncation to original name
     name_chars = label if truncate_chars is None else \
         (c for g in myunicode.grapheme.split(label) for c in g[:truncate_chars])
