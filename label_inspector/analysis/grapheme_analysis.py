@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 
 from label_inspector.common import myunicode
+from label_inspector.components.font_support import aggregate_font_support
 
 from .analysis_framework import AnalysisBase, analysis_object, field, agg_only, agg_all
 from .char_analysis import CharAnalysis
@@ -82,8 +83,8 @@ class GraphemeAnalysis(AnalysisBase):
         return cls or 'special'
 
     @field
-    def font_support_all_os(self) -> bool:
+    def font_support_all_os(self) -> Optional[bool]:
         if self.type == 'emoji':
-            return self.root.i.f.font_support.all_os(self.grapheme)
+            return self.root.i.f.font_support.check_support(self.grapheme)
         else:
-            return all(self.root.i.f.font_support.all_os(c) for c in self.grapheme)
+            return aggregate_font_support([self.root.i.f.font_support.check_support(c) for c in self.grapheme])

@@ -86,8 +86,11 @@ class InspectorGraphemeResult(BaseModel):
             '* `special` - for any grapheme that doesn\'t match one of the other classifications or if characters have different types'
         )
 
-    font_support_all_os: bool = Field(
-        description="Whether the grapheme is supported by the default sets of fonts on common operating systems.",
+    font_support_all_os: Optional[bool] = Field(
+        description="Whether the grapheme is supported by the default sets of fonts on common operating systems.\n"
+                    "* `true` - the grapheme is known to be supported\n"
+                    "* `false` - the grapheme is known not to be supported\n"
+                    "* `null` - it is unknown whether the grapheme is supported or not"
     )
 
 
@@ -181,11 +184,16 @@ class InspectorResultBase(BaseModel):
                     'Is `null` if the input label is not compatible with Punycode (see `punycode_compatibility`).'
     )
 
+    font_support_all_os: Optional[bool] = Field(
+        description="Whether all graphemes in the label are supported by the default sets of fonts on common operating systems.\n"
+                    "* `true` - all graphemes are known to be supported\n"
+                    "* `false` - at least one grapheme is known not to be supported\n"
+                    "* `null` - at least one grapheme is unknown and zero graphemes are known not to be supported"
+    )
+
 
 class InspectorResultNormalized(InspectorResultBase):
     beautiful_label: str = Field(description="ENSIP-15 beautified version of the input label.")
-
-    font_support_all_os: bool = Field(description="Whether all graphemes in the label are supported by the default sets of fonts on common operating systems.")
 
 
 class InspectorResultUnnormalized(InspectorResultBase):

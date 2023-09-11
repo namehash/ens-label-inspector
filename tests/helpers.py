@@ -37,11 +37,11 @@ BASE_RESPONSE_FIELDS = [
     'punycode_encoding',
     'canonical_confusable_label',
     'beautiful_canonical_confusable_label',
+    'font_support_all_os',
 ]
 
 NORMALIZED_RESPONSE_FIELDS = [
     'beautiful_label',
-    'font_support_all_os',
 ]
 
 UNNORMALIZED_RESPONSE_FIELDS = [
@@ -152,7 +152,6 @@ def check_inspector_base_response(label,
             'codepoint',
             'link',
             'type',
-            # 'duplicated_combining_mark'
         ])
 
         assert char['value'] == name_char
@@ -164,6 +163,18 @@ def check_inspector_base_response(label,
         else:
             assert char['link'] == f'https://unicodeplus.com/U+{ord(char["value"]):04X}'
         assert type(char['type']) == str
+
+
+def check_inspector_normalized_response(label,
+                                        resp,
+                                        truncate_confusables=None,
+                                        truncate_graphemes=None,
+                                        truncate_chars=None):
+    assert sorted(resp.keys()) == sorted(BASE_RESPONSE_FIELDS + NORMALIZED_RESPONSE_FIELDS)
+
+    assert resp['label'] == label
+    assert resp['status'] == 'normalized'
+    assert resp['beautiful_label'] == ens_beautify(label)
 
 
 def check_inspector_unnormalized_response(label,
@@ -212,12 +223,11 @@ def check_inspector_response(label,
                                   truncate_graphemes=truncate_graphemes,
                                   truncate_chars=truncate_chars)
     if is_ens_normalized(label):
-        pass # TODO
-        # check_inspector_normalized_response(label,
-        #                                     resp,
-        #                                     truncate_confusables=truncate_confusables,
-        #                                     truncate_graphemes=truncate_graphemes,
-        #                                     truncate_chars=truncate_chars,)
+        check_inspector_normalized_response(label,
+                                            resp,
+                                            truncate_confusables=truncate_confusables,
+                                            truncate_graphemes=truncate_graphemes,
+                                            truncate_chars=truncate_chars,)
     else:
         check_inspector_unnormalized_response(label,
                                               resp,
