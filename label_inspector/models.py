@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from ens_normalize import DisallowedSequenceType, CurableSequenceType, NormalizableSequenceType
 
 
-class BaseInspectorLabel(BaseModel):
+class InspectorRequestBase(BaseModel):
     truncate_confusables: Optional[int] = Field(
         default=None,
         ge=0,
@@ -28,12 +28,12 @@ class BaseInspectorLabel(BaseModel):
                     "* the truncation has been applied if sum of lengths of `chars` in graphemes (count of chars in all graphemes) is different than `char_length`")
 
 
-class InspectorLabel(BaseInspectorLabel):
+class InspectorSingleRequest(InspectorRequestBase):
     label: str = Field(description='Input label.')
 
 
-class BatchInspectorLabel(BaseInspectorLabel):
-    labels: List[str] = Field(description='Batch of input labels')
+class InspectorBatchRequest(InspectorRequestBase):
+    labels: List[str] = Field(description='Batch of input labels.')
 
 
 class InspectorCharResult(BaseModel):
@@ -226,3 +226,7 @@ class InspectorResultUnnormalized(InspectorResultBase):
 
 
 InspectorResult = Union[InspectorResultNormalized, InspectorResultUnnormalized]
+
+
+class InspectorBatchResult(BaseModel):
+    results: List[InspectorResult] = Field(description="List of results for each input label.")
