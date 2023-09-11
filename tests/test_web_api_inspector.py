@@ -53,3 +53,13 @@ def test_inspector_cured_label(test_test_client):
     resp = response.json()
     check_inspector_response(label, resp)
     assert resp['cured_label'] == None
+
+
+def test_inspector_batch(test_test_client):
+    labels = ['cat', 'dog', 'horse']
+    response = test_test_client.post('/batch', json={'labels': labels})
+    assert response.status_code == 200
+    resp = response.json()
+    assert len(resp['results']) == len(labels)
+    for label, result in zip(labels, resp['results']):
+        check_inspector_response(label, result)
