@@ -31,12 +31,14 @@ class Inspector:
                       truncate_confusables: int = None,
                       truncate_graphemes: int = None,
                       truncate_chars: int = None,
+                      simple_confusables: bool = False,
                       ) -> InspectorResult:
         config = LabelAnalysisConfig(
             label,
             truncate_confusables=truncate_confusables,
             truncate_graphemes=truncate_graphemes,
             truncate_chars=truncate_chars,
+            simple_confusables=simple_confusables,
         )
 
         label_analysis = LabelAnalysis(self, config)

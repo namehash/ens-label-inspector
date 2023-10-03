@@ -8,6 +8,12 @@ from label_inspector.common import myunicode
 from label_inspector.data import get_resource_path
 from label_inspector.common.pickle_cache import pickled_property
 
+from ens_normalize import is_ens_normalized
+
+
+def is_simple_confusable(conf: str) -> bool:
+    return is_ens_normalized(conf) and len(myunicode.grapheme.split(conf)) == 1
+
 
 class Confusables:
     """Stores confusable characters and graphemes."""
@@ -17,8 +23,8 @@ class Confusables:
         if not config.inspector.lazy_loading:
             self.confusable_graphemes
 
-    @pickled_property('inspector.grapheme_confusables')
-    def confusable_graphemes(self) -> Dict[str, Tuple[str, List[str]]]:
+    @pickled_property('inspector.confusables', 'inspector.grapheme_confusables')
+    def _full_confusable_graphemes(self) -> Dict[str, Tuple[str, List[str]]]:
         with open(get_resource_path(self.config.inspector.confusables), 'r', encoding='utf-8') as f:
             old_confusables = json.load(f)
 
@@ -26,6 +32,17 @@ class Confusables:
             new_confusables = json.load(f)
 
         return old_confusables | new_confusables
+
+    @pickled_property('inspector.confusables', 'inspector.grapheme_confusables')
+    def _simple_confusable_graphemes(self) -> Dict[str, Tuple[str, List[str]]]:
+        all_confusables = self._full_confusable_graphemes
+        return {g: (canon if canon is not None and is_simple_confusable(canon) else None,
+                    list(filter(is_simple_confusable, confs)))
+                    for g, (canon, confs) in all_confusables.items()}
+
+    @property
+    def confusable_graphemes(self) -> Dict[str, Tuple[str, List[str]]]:
+        return self._full_confusable_graphemes
 
     def is_confusable_grapheme_with_combining_marks(self, grapheme: str) -> bool:
         return len(grapheme) > 1 \
@@ -74,3 +91,9 @@ class Confusables:
     def get_canonical(self, string: str) -> Optional[str]:
         canonical = self.get_canonical_grapheme(string)
         return canonical if canonical or len(string) == 1 else self.get_canonical(string[0])
+
+
+class SimpleConfusables(Confusables):
+    @property
+    def confusable_graphemes(self) -> Dict[str, Tuple[str, List[str]]]:
+        return self._simple_confusable_graphemes

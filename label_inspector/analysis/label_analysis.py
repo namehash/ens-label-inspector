@@ -30,11 +30,13 @@ class LabelAnalysisConfig:
                  truncate_confusables: int = None,
                  truncate_graphemes: int = None,
                  truncate_chars: int = None,
+                 simple_confusables: bool = False,
                  long_label: int = 30):
         self.label = label
         self.truncate_confusables = truncate_confusables
         self.truncate_graphemes = truncate_graphemes
         self.truncate_chars = truncate_chars
+        self.simple_confusables = simple_confusables
         self.long_label = long_label
 
 
