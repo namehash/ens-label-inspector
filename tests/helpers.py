@@ -35,6 +35,7 @@ BASE_RESPONSE_FIELDS = [
     'dns_hostname_support',
     'punycode_compatibility',
     'punycode_encoding',
+    'canonical_label',
     'canonical_confusable_label',
     'beautiful_canonical_confusable_label',
     'font_support_all_os',
