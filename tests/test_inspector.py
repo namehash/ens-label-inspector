@@ -280,3 +280,13 @@ def test_inspector_font_support(analyse_label):
     assert resp['graphemes'][0]['font_support_all_os'] == True
     assert resp['graphemes'][1]['font_support_all_os'] == False
     assert resp['graphemes'][2]['font_support_all_os'] == False
+
+
+def test_simple_confusables(analyse_label):
+    resp = analyse_label('Ĳ', simple_confusables=False)
+    assert resp['graphemes'][0]['confusables_canonical']['value'] == 'lJ'
+    assert 'IJ' in [c['value'] for c in resp['graphemes'][0]['confusables_other']]
+
+    resp = analyse_label('Ĳ', simple_confusables=True)
+    assert resp['graphemes'][0]['confusables_canonical'] is None
+    assert 'IJ' not in [c['value'] for c in resp['graphemes'][0]['confusables_other']]

@@ -23,10 +23,13 @@ inspector = init_inspector()
 
 
 def analyse_label(label: str, request_body: InspectorSingleRequest) -> InspectorResult:
-    result = inspector.analyse_label(label,
-                                     truncate_confusables=request_body.truncate_confusables,
-                                     truncate_graphemes=request_body.truncate_graphemes,
-                                     truncate_chars=request_body.truncate_chars)
+    result = inspector.analyse_label(
+        label,
+        truncate_confusables=request_body.truncate_confusables,
+        truncate_graphemes=request_body.truncate_graphemes,
+        truncate_chars=request_body.truncate_chars,
+        simple_confusables=request_body.simple_confusables,
+    )
     return result
 
 

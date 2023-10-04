@@ -26,6 +26,11 @@ class InspectorRequestBase(BaseModel):
                     "* if `null` (default value) then no truncation is applied\n"
                     "* if `0` then `chars` field in each element of `graphemes` list is an empty list\n"
                     "* the truncation has been applied if sum of lengths of `chars` in graphemes (count of chars in all graphemes) is different than `char_length`")
+    simple_confusables: bool = Field(
+        default=False,
+        description="Limit `confusables_other` and `confusables_canonical` fields output to confusables that are single-grapheme and ENSIP-15 normalized.\n"
+                    "* this option affects the earliest stage of confusable generation and impacts all confusable-related fields"
+    )
 
 
 class InspectorSingleRequest(InspectorRequestBase):
@@ -109,10 +114,12 @@ InspectorConfusableResult = Union[InspectorConfusableGraphemeResult, InspectorCo
 class InspectorGraphemeWithConfusablesResult(InspectorGraphemeResult):
     confusables_canonical: Optional[InspectorConfusableResult] = \
         Field(description="Canonical form of confusable grapheme.\n"
-                          "* may be `null` if canonical form is not known/does not exist")
+                          "* may be `null` if canonical form is not known/does not exist\n"
+                          "* may be null when `simple_confusables` is enabled and the canonical is not single-grapheme or not normalized")
     confusables_other: List[InspectorConfusableResult] = \
-        Field(description="List of confusable forms without canonical.\n"
-                          "* if the grapheme is not confusable then empty list is returned.")
+        Field(description="List of confusable forms without the canonical.\n"
+                          "* if the grapheme is not confusable then empty list is returned\n"
+                          "* if `simple_confusables` is enabled then only single-grapheme normalized confusables are returned")
 
 
 class InspectorResultBase(BaseModel):

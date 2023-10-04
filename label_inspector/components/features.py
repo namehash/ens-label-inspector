@@ -9,8 +9,7 @@ from unidecode import unidecode
 
 from label_inspector.common import myunicode
 from label_inspector.common.on_demand_regex import OnDemandRegex
-from label_inspector.data import get_resource_path
-from label_inspector.components.confusables import Confusables
+from label_inspector.components.confusables import Confusables, SimpleConfusables
 from label_inspector.components.font_support import FontSupport
 
 
@@ -20,7 +19,8 @@ class Features:
 
         lazy_loading = config.inspector.lazy_loading
 
-        self.confusables = Confusables(self.config)
+        self.full_confusables = Confusables(self.config)
+        self.simple_confusables = SimpleConfusables(self.config)
         self.font_support = FontSupport(self.config)
 
         self.regexp_patterns = {
@@ -232,17 +232,17 @@ class Features:
         """Return a name of Unicode block in which the character is or None"""
         return myunicode.block_of(label)
 
-    def is_confusable(self, label) -> bool:
+    def is_confusable(self, label, simple=False) -> bool:
         """Indicates if a character is confusable."""
-        return self.confusables.is_confusable(label)
+        return self.simple_confusables.is_confusable(label) if simple else self.full_confusables.is_confusable(label)
 
-    def get_confusables(self, label) -> Iterable[str]:
+    def get_confusables(self, label, simple=False) -> Iterable[str]:
         """Return set of confusable characters."""
-        return self.confusables.get_confusables(label)
+        return self.simple_confusables.get_confusables(label) if simple else self.full_confusables.get_confusables(label)
 
-    def get_canonical(self, label):
+    def get_canonical(self, label, simple=False):
         """Returns canonical character from confusable set."""
-        return self.confusables.get_canonical(label)
+        return self.simple_confusables.get_canonical(label) if simple else self.full_confusables.get_canonical(label)
 
     def is_ascii(self, label) -> bool:
         """Detects if label is all ASCII."""
