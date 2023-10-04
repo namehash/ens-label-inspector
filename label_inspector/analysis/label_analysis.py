@@ -190,6 +190,18 @@ class LabelAnalysis(AnalysisBase):
         return self._punycode_analysis.encoded
 
     @field
+    def canonical_label(self) -> Optional[str]:
+        canonicals = []
+        for grapheme in self._graphemes_untruncated:
+            if not grapheme._is_confusable:
+                canonicals.append(grapheme.value)
+            elif grapheme.confusables_canonical is None:
+                return None
+            else:
+                canonicals.append(grapheme.confusables_canonical.value)
+        return ''.join(canonicals)
+
+    @field
     def canonical_confusable_label(self) -> Optional[str]:
         """
         Input label where all confusables are replaced
@@ -201,19 +213,10 @@ class LabelAnalysis(AnalysisBase):
         """
         if self.confusable_count == 0:
             return None
-
-        canonicals = []
-        for grapheme in self._graphemes_untruncated:
-            if not grapheme._is_confusable:
-                canonicals.append(grapheme.value)
-            elif grapheme.confusables_canonical is None:
-                return None
-            else:
-                canonicals.append(grapheme.confusables_canonical.value)
-
-        canonical_label = ''.join(canonicals)
-
         try:
+            canonical_label = self.canonical_label
+            if canonical_label is None:
+                return None
             return ens_normalize(canonical_label)
         except DisallowedSequence:
             return None

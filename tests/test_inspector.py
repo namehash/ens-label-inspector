@@ -290,3 +290,11 @@ def test_simple_confusables(analyse_label):
     resp = analyse_label('Ĳ', simple_confusables=True)
     assert resp['graphemes'][0]['confusables_canonical'] is None
     assert 'IJ' not in [c['value'] for c in resp['graphemes'][0]['confusables_other']]
+
+
+def test_canonical_label(analyse_label):
+    resp = analyse_label('ąęćżabcń')
+    assert resp['canonical_label'] == 'aeczabcn'
+
+    resp = analyse_label('Ĳ', simple_confusables=True)
+    assert resp['canonical_label'] is None

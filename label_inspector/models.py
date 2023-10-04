@@ -161,6 +161,11 @@ class InspectorResultBase(BaseModel):
     graphemes: List[InspectorGraphemeWithConfusablesResult] = Field(
         description="List of graphemes in the input label. May be shorter than `grapheme_length` if `truncate_graphemes` is enabled.")
 
+    canonical_label: Optional[str] = Field(
+        description='Input label where all confusables are replaced with their canonicals.\n'
+                    'Is `null` if:\n'
+                    '* at least one confusable does not have a canonical')
+
     canonical_confusable_label: Optional[str] = Field(
         description='Input label where all confusables are replaced with their canonicals and run through ENSIP-15 normalization.\n'
                     'Is `null` if:\n'
