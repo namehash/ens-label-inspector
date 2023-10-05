@@ -98,6 +98,7 @@ class InspectorGraphemeResult(BaseModel):
                     "* `null` - it is unknown whether the grapheme is supported or not"
     )
 
+    description: str = Field(description="Description of the grapheme type.")
 
 class InspectorConfusableGraphemeResult(InspectorGraphemeResult):
     pass

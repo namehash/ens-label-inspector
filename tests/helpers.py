@@ -93,6 +93,7 @@ def check_inspector_base_response(label,
             'font_support_all_os',
             'confusables_other',
             'confusables_canonical',
+            'description',
         ])
         assert type(grapheme['value']) == str
         assert type(grapheme['chars']) == list
@@ -106,7 +107,7 @@ def check_inspector_base_response(label,
                     'chars',
                 ])
             else:
-                sorted(grapheme['confusables_canonical'].keys()) == sorted([
+                assert sorted(grapheme['confusables_canonical'].keys()) == sorted([
                     'value',
                     'chars',
                     'name',
@@ -114,6 +115,8 @@ def check_inspector_base_response(label,
                     'link',
                     'script',
                     'type',
+                    'font_support_all_os',
+                    'description'
                 ])
 
         if truncate_confusables is not None:
@@ -126,7 +129,7 @@ def check_inspector_base_response(label,
                     'chars',
                 ])
             else:
-                sorted(conf.keys()) == sorted([
+                assert sorted(conf.keys()) == sorted([
                     'value',
                     'chars',
                     'name',
@@ -134,6 +137,8 @@ def check_inspector_base_response(label,
                     'link',
                     'script',
                     'type',
+                    'font_support_all_os',
+                    'description'
                 ])
 
         if truncate_chars is not None:

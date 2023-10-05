@@ -88,3 +88,26 @@ class GraphemeAnalysis(AnalysisBase):
             return self.root.i.f.font_support.check_support(self.grapheme)
         else:
             return aggregate_font_support([self.root.i.f.font_support.check_support(c) for c in self.grapheme])
+
+    @field
+    def description(self) -> str:
+        if self.type == 'simple_letter':
+            return 'A-Z letter'
+        elif self.type == 'simple_number':
+            return '0-9 number'
+        elif self.type == 'other_letter':
+            return f'{self.script} letter'
+        elif self.type == 'other_number':
+            return f'{self.script} number'
+        elif self.type == 'hyphen':
+            return 'Hyphen'
+        elif self.type == 'dollarsign':
+            return 'Dollar sign'
+        elif self.type == 'underscore':
+            return 'Underscore'
+        elif self.type == 'emoji':
+            return 'Emoji'
+        elif self.type == 'invisible':
+            return 'Invisible character'
+        elif self.type == 'special':
+            return 'Special character'
