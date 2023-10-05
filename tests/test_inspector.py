@@ -292,9 +292,28 @@ def test_simple_confusables(analyse_label):
     assert 'IJ' not in [c['value'] for c in resp['graphemes'][0]['confusables_other']]
 
 
-def test_canonical_label(analyse_label):
+def test_canonical_label2(analyse_label):
     resp = analyse_label('ąęćżabcń')
     assert resp['canonical_label'] == 'aeczabcn'
 
     resp = analyse_label('Ĳ', simple_confusables=True)
     assert resp['canonical_label'] is None
+
+@pytest.mark.parametrize('grapheme,type,description', [
+    ('a', 'simple_letter', 'A-Z letter'),
+    ('0', 'simple_number', '0-9 number'),
+    ('ą', 'other_letter', 'Latin letter'),
+    ('Ⅷ', 'other_number', 'Latin number'),
+    ('-', 'hyphen', 'Hyphen'),
+    ('$', 'dollarsign', 'Dollar sign'),
+    ('_', 'underscore', 'Underscore'),
+    ('😵‍💫', 'emoji', 'Emoji'),
+    ('\U0000200D', 'invisible', 'Invisible character'),
+    ('!', 'special', 'Special character'),
+    ('-\u0610', 'special', 'Special character'),
+    ('\ufffe', 'special', 'Special character'),
+])
+def test_inspector_grapheme_description(analyse_label, grapheme, type, description):
+    result = analyse_label(grapheme)
+    assert result['graphemes'][0]['description'] == description
+    assert result['graphemes'][0]['type'] == type
