@@ -156,7 +156,7 @@ def test_inspector_grapheme_label(analyse_label):
 @pytest.mark.parametrize(
     'input_label, normalized_input, expected_canonical_label, expected_beautiful_canonical_label',
     [
-        ('pure-words', True, None, None),  # no confusables
+        ('pure-words', True, 'pure-words', 'pure-words'),  # no confusables
         ('🄓ire', False, None, None),  # not normalized input
         ('yés', True, 'yes', 'yes'),  # "e" has the canonical version
         ('yéś', True, 'yes', 'yes'),  # both "Ŷ" and "Ś" have canonical version
@@ -175,11 +175,11 @@ def test_canonical_label(analyse_label,
                          expected_beautiful_canonical_label: str):
     result = analyse_label(input_label)
     if normalized_input:
-        assert result['canonical_confusable_label'] == expected_canonical_label
-        assert result['beautiful_canonical_confusable_label'] == expected_beautiful_canonical_label
+        assert result['normalized_canonical_label'] == expected_canonical_label
+        assert result['beautiful_canonical_label'] == expected_beautiful_canonical_label
     else:
-        assert result['canonical_confusable_label'] is None
-        assert result['beautiful_canonical_confusable_label'] is None
+        assert result['normalized_canonical_label'] is None
+        assert result['beautiful_canonical_label'] is None
 
 
 @pytest.mark.parametrize('label,script', [

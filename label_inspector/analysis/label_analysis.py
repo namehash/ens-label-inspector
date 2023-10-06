@@ -202,7 +202,7 @@ class LabelAnalysis(AnalysisBase):
         return ''.join(canonicals)
 
     @field
-    def canonical_confusable_label(self) -> Optional[str]:
+    def normalized_canonical_label(self) -> Optional[str]:
         """
         Input label where all confusables are replaced
         with their canonicals and run through ENSIP normalization.
@@ -211,31 +211,26 @@ class LabelAnalysis(AnalysisBase):
         * at least one confusable does not have a canonical
         * result cannot be normalized
         """
-        if self.confusable_count == 0:
+        canonical_label = self.canonical_label
+        if canonical_label is None:
             return None
         try:
-            canonical_label = self.canonical_label
-            if canonical_label is None:
-                return None
             return ens_normalize(canonical_label)
         except DisallowedSequence:
             return None
 
     @field
-    def beautiful_canonical_confusable_label(self) -> Optional[str]:
+    def beautiful_canonical_label(self) -> Optional[str]:
         """
         ENSIP beautified `canonical_confusable_label`.
         Is `null` if `canonical_confusable_label` is `null`.
         """
-        canonical_label = self.canonical_confusable_label
+        canonical_label = self.canonical_label
         if canonical_label is None:
             return None
-
         try:
-            beautiful = ens_beautify(canonical_label)
-            return beautiful
+            return ens_beautify(canonical_label)
         except DisallowedSequence:
-            # should never happen as canonical_confusable_label is already normalized
             return None
 
     @field
