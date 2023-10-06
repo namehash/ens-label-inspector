@@ -167,14 +167,13 @@ class InspectorResultBase(BaseModel):
                     'Is `null` if:\n'
                     '* at least one confusable does not have a canonical')
 
-    canonical_confusable_label: Optional[str] = Field(
+    normalized_canonical_label: Optional[str] = Field(
         description='Input label where all confusables are replaced with their canonicals and run through ENSIP-15 normalization.\n'
                     'Is `null` if:\n'
-                    '* input label is not confusable\n'
                     '* at least one confusable does not have a canonical\n'
                     '* result contains disallowed characters and cannot be normalized')
 
-    beautiful_canonical_confusable_label: Optional[str] = Field(
+    beautiful_canonical_label: Optional[str] = Field(
         description='Beautified version of `canonical_confusable_label`. Is `null` if `canonical_confusable_label` is null.')
 
     dns_hostname_support: bool = Field(
