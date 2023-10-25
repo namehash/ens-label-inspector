@@ -5,7 +5,6 @@ import regex
 import idna
 from ens_normalize import ens_normalize, ens_beautify, ens_tokenize, is_ens_normalized, DisallowedSequence
 import unicodedata
-from unidecode import unidecode
 
 from label_inspector.common import myunicode
 from label_inspector.common.on_demand_regex import OnDemandRegex
@@ -283,12 +282,6 @@ class Features:
     def bytes(self, label) -> int:
         """Number of bytes in UTF8 encoding."""
         return len(label.encode('utf-8'))
-
-    def unidecode(self, label) -> str:
-        """https://pypi.org/project/Unidecode/ Tries to represent label in ASCII characters.
-        It converts 'ł' to 'l', 'ω' (omega) to 'o'.
-        """
-        return unidecode(label, errors='ignore')
 
     def NFKD_ascii(self, label) -> str:
         """Returns string after decomposition in compatible mode with removed non-ascii chars."""
