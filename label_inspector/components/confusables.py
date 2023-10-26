@@ -10,6 +10,10 @@ from label_inspector.common.pickle_cache import pickled_property
 
 from ens_normalize import is_ens_normalized
 
+def uniq(l: List) -> List:
+    """Return list with unique elements."""
+    used = set()
+    return [x for x in l if x not in used and (used.add(x) or True)]
 
 def is_simple_confusable(conf: str) -> bool:
     return is_ens_normalized(conf) and len(myunicode.grapheme.split(conf)) == 1
@@ -31,7 +35,25 @@ class Confusables:
         with open(get_resource_path(self.config.inspector.grapheme_confusables), 'r', encoding='utf-8') as f:
             new_confusables = json.load(f)
 
-        return old_confusables | new_confusables
+        # merge both dictionaries
+        for k, v in new_confusables.items():
+            if k in old_confusables:
+                canonical, confusables = old_confusables[k]
+                new_canonical, new_confusables = v
+                if canonical is None:
+                    old_confusables[k][0] = new_canonical
+                else:
+                    confusables.append(new_canonical)
+                confusables += new_confusables
+                try:
+                    confusables.remove(old_confusables[k][0])
+                except ValueError:
+                    pass
+                old_confusables[k][1] = [c for c in uniq(confusables) if c is not None]
+            else:
+                old_confusables[k] = v
+
+        return old_confusables
 
     @pickled_property('inspector.confusables', 'inspector.grapheme_confusables')
     def _simple_confusable_graphemes(self) -> Dict[str, Tuple[str, List[str]]]:
@@ -55,9 +77,14 @@ class Confusables:
     def is_confusable_grapheme(self, grapheme: str) -> bool:
         if regex.fullmatch(r'[a-z0-9_$-]+', grapheme):
             return False
-
-        return self.is_confusable_grapheme_in_dictionary(grapheme) \
-               or self.is_confusable_grapheme_with_combining_marks(grapheme)
+        
+        if grapheme in self.confusable_graphemes:
+            if self.confusable_graphemes[grapheme][0] == grapheme and not self.confusable_graphemes[grapheme][1]:
+                return False
+            else:
+                return True
+            
+        return self.is_confusable_grapheme_with_combining_marks(grapheme)
 
     def get_confusables_grapheme(self, grapheme: str) -> List[str]:
         if self.is_confusable_grapheme_with_combining_marks(grapheme):
@@ -79,10 +106,10 @@ class Confusables:
         if self.is_confusable_grapheme_in_dictionary(grapheme):
             return self.confusable_graphemes[grapheme][0]
 
-        return None
+        return grapheme if len(grapheme)==1 else None
 
     def is_confusable(self, string: str) -> bool:
-        return self.is_confusable_grapheme(string) or (len(string) > 1 and self.is_confusable(string[0]))
+        return self.is_confusable_grapheme(string) #or (len(string) > 1 and self.is_confusable(string[0]))
 
     def get_confusables(self, string: str) -> List[str]:
         confusables = self.get_confusables_grapheme(string)

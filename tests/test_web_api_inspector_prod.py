@@ -438,7 +438,7 @@ def test_inspector_emoji_with_ascii(prod_test_client):
     assert grapheme['name'] == 'KEYCAP: *'
     assert grapheme['script'] == 'Common'
     assert grapheme['type'] == 'emoji'
-    assert grapheme['confusables_canonical'] is None
+    assert grapheme['confusables_canonical']['value'] == '*⃣'
     assert len(grapheme['confusables_other']) == 11
     confusables = [value['value'] for value in grapheme['confusables_other']]
     assert '8⃣' in confusables
