@@ -54,9 +54,9 @@ def test_confusable_simple():
         ('🏃‍♂', True, '🏃'),
         ('🏃‍♂️', False, None),  # FEOF at the end
         ('👩🏿‍🚒', True, '🧑‍🚒'),
-        ('🫱🏻‍🫲🏿', True, None),
+        ('🫱🏻‍🫲🏿', True, '🤝'),
         ('🤜🏿', True, '🤜'),
-        ('*⃣', True, None),
+        ('*⃣', True, '*⃣'),
         ('🇺🇦', False, None),
         ('🏴󠁧󠁢󠁷󠁬󠁳󠁿', False, None),
         ('⛹🏽', True, '⛹'),
@@ -85,9 +85,9 @@ def test_grapheme_confusable(grapheme: str, is_confusable: bool, canonical: str)
         ('b\u0328', True, 'b'),
         ('b\u0329', True, 'b'),
         ('f̡̨̢̝̭͓̖͉͐͐́̎̇ͪ̚', True, 'f'),
-        ('🫱🏻‍🫲🏿', True, None),
+        ('🫱🏻‍🫲🏿', True, '🤝'),
         ('🤜🏿', True, '🤜'),
-        ('*⃣', True, None),
+        ('*⃣', True, '*⃣'),
         ('🇺🇦', False, None),
     ]
 )
