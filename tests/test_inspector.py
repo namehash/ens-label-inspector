@@ -299,6 +299,12 @@ def test_canonical_label2(analyse_label):
     resp = analyse_label('Ĳ', simple_confusables=True)
     assert resp['canonical_label'] is None
 
+    resp = analyse_label('n’diaye')
+    assert resp['canonical_label'] == 'n’diaye'
+
+    resp = analyse_label('n’diaye', simple_confusables=True)
+    assert resp['canonical_label'] == 'n’diaye'
+
 @pytest.mark.parametrize('grapheme,type,description', [
     ('a', 'simple_letter', 'A-Z letter'),
     ('0', 'simple_number', '0-9 number'),
