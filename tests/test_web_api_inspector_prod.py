@@ -485,3 +485,14 @@ def test_inspector_longest_speed_limit(prod_test_client, length, limit):
     t = min(times)
 
     assert t < limit, f'Time limit exceeded: {t} s'
+
+
+def test_canonicals(prod_test_client):
+    label = 'n’diaye'
+    response = prod_test_client.post('/', json={'label': label})
+    assert response.status_code == 200
+    json = response.json()
+
+    check_inspector_response(label, json)
+
+    assert json['canonical_label'] == 'n’diaye'
