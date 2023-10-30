@@ -1,6 +1,7 @@
 import json
 from typing import Dict, List, Tuple, Optional
 
+import ens_normalize.normalization
 import regex
 from omegaconf import DictConfig
 
@@ -15,8 +16,13 @@ def uniq(l: List) -> List:
     used = set()
     return [x for x in l if x not in used and (used.add(x) or True)]
 
+def is_normalized(conf: str) -> bool:
+    if len(conf)==1 and ord(conf) in ens_normalize.normalization.NORMALIZATION.valid:
+        return True
+    return is_ens_normalized(conf)
+
 def is_simple_confusable(conf: str) -> bool:
-    return is_ens_normalized(conf) and len(myunicode.grapheme.split(conf)) == 1
+    return is_normalized(conf) and len(myunicode.grapheme.split(conf)) == 1
 
 
 class Confusables:
