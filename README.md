@@ -9,7 +9,7 @@ The Label Inspector is a critical component of the NameHash software stack that 
   * ENSIP-15 verification with detailed explanations and auto-suggestions
   * Punycode and DNS hostname compatibility checks
 * Supports many use cases
-  * Standalone Python library (PyPI link)
+  * Standalone Python library ([PyPI](https://pypi.org/project/ens-label-inspector/))
   * ASGI web server
   * [Amazon AWS Lambda](https://aws.amazon.com/lambda/) handler
 
@@ -17,10 +17,10 @@ The Label Inspector is a critical component of the NameHash software stack that 
 
 ### Installing the library
 
-The Label Inspector is available as a Python library on [PyPI]. You can install it with `pip`:
+The Label Inspector is available as a Python library on [PyPI](https://pypi.org/project/ens-label-inspector/). You can install it with `pip`:
 
 ```bash
-pip install TODO
+pip install ens-label-inspector
 ```
 
 ### Starting the web server
@@ -49,4 +49,4 @@ t:8000
 
 The Label Inspector includes a handler for [Amazon AWS Lambda](https://aws.amazon.com/lambda/). It is available in the `label_inspector.lambda` module. You can use it to create a Lambda function that will respond to HTTP requests. It uses the [mangum](https://mangum.io) library.
 
-TODO
+See the included [Dockerfile](/Dockerfile) for an example of how to build a Lambda deployment package.
