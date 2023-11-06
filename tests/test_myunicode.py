@@ -429,6 +429,11 @@ def test_grapheme_iter(text, graphemes):
         ('♍', 'VIRGO'),
         ('🇦🇶', 'FLAG: ANTARCTICA'),
         ('\U0001F469\U0001F3FF\U0000200D\U0001F9B2', 'WOMAN: DARK SKIN TONE, BALD'),
+        ('\U0001F469\U0001F3FF\U0000200D\U0001F9B2\ufe0f', 'WOMAN: DARK SKIN TONE, BALD WITH VARIATIONAL SELECTOR(S)'),
+        ('\U0001F600', 'GRINNING FACE'),
+        ('\U0001F600\ufe0f', 'GRINNING FACE WITH VARIATIONAL SELECTOR(S)'),
+        ('👁️‍🗨️', 'EYE IN SPEECH BUBBLE WITH VARIATIONAL SELECTOR(S)'),
+        ('👁️‍🗨', 'EYE IN SPEECH BUBBLE WITH VARIATIONAL SELECTOR(S)'),
     ]
 )
 def test_grapheme_name(grapheme, name):
