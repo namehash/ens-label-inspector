@@ -75,6 +75,9 @@ class GraphemeAnalysis(AnalysisBase):
 
     @field
     def type(self) -> str:
+        if self.grapheme == '\ufe0f':  # because it is treated as emoji
+            return 'invisible'
+            
         if myunicode.is_emoji(self.grapheme):
             return 'emoji'
 
