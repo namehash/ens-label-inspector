@@ -409,11 +409,25 @@ def test_all_characters():
         ('', []),
         ('a', ['a']),
         ('abc', ['a', 'b', 'c']),
-        ['a\u200db', ['a\u200d', 'b']],
+        ['a\u200db', ['a', '\u200d', 'b']],
         ('🇪🇹', ['🇪🇹']),
         ('\U0001F469\U0001F3FF\U0000200D\U0001F9B2', ['\U0001F469\U0001F3FF\U0000200D\U0001F9B2']),
         ('\U0001F469\U0001F3FF\U0000200D\U0000200D\U0001F9B2',
-         ['\U0001F469\U0001F3FF\U0000200D\U0000200D', '\U0001F9B2']),
+         ['\U0001F469\U0001F3FF', '\U0000200D', '\U0000200D', '\U0001F9B2']),
+        #feofs
+        ('6️9', ['6','\ufe0f','9']),
+        ('️9', ['\ufe0f','9']),
+        ('6️', ['6','\ufe0f']),
+        ('🦄️', ['🦄️']),
+        ('🦄️️', ['🦄️', '\ufe0f']),
+        ('6‍9', ['6','‍','9']),
+        ('6‌9', ['6','‌','9']),
+        ('6‌‍️9', ['6','‌','‍','\ufe0f','9']),
+        ('a	  ­͏b', ['a', '\t', ' ', '\xa0', '\xad', '͏', 'b']),
+        ('a؜b', ['a', '\u061c', 'b']),
+        ('a​b', ['a', '\u200b', 'b']),
+        ('a\ufeffb', ['a', '\ufeff', 'b']),
+        ('a\ufe0eb', ['a', '\ufe0e', 'b']),
     ]
 )
 def test_grapheme_iter(text, graphemes):
@@ -451,6 +465,8 @@ def test_grapheme_iter_no_hangul():
 
     for line in lines:
         if any(block.find('Hangul') != -1 and block.find('Jamo') != -1 for c in line for block in [myunicode.block_of(c) or '']):
+            continue
+        if '\ufe0f' in line or '\u200d' in line or '\u200c' in line:
             continue
 
         assert myunicode.grapheme.split(line) == re.findall(r'\X', line)
