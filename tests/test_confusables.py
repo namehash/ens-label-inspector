@@ -98,6 +98,9 @@ def test_grapheme_confusable(grapheme: str, is_confusable: bool, canonical: str)
         ("ΰ", True, "υ"),
         ("ό", True, 'ο'),
         ("’", True, '’'),
+        ("٠", True, '٠'),
+        ("٩", True, '٩'),
+        ("٧", True, '٧'),
     ]
 )
 def test_confusables(string: str, is_confusable: bool, canonical: str):
