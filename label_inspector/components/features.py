@@ -38,9 +38,9 @@ class Features:
             'other_letter': self.is_letter,
             'other_number': self.simple_number,
             'hyphen': self.is_hyphen,
+            'invisible': self.invisible,
             'emoji': self.is_emoji,
             'simple': self.simple,
-            'invisible': self.invisible,
             'simple_letter': self.simple_letter,
             'simple_number': self.simple_number,
             'simple_letter_emoji': self.simple_letter_emoji,
@@ -49,9 +49,9 @@ class Features:
             'other_letter': self.is_letter,
             'other_number': self.simple_number,
             'hyphen': self.is_hyphen,
+            'invisible': self.invisible,
             'emoji': self.is_emoji,
             'simple': self.simple,
-            'invisible': self.invisible,
             'simple_letter': self.simple_letter,
             'simple_number': self.simple_number,
         }
@@ -64,8 +64,8 @@ class Features:
             'hyphen': self.is_hyphen,
             'dollarsign': self.is_dollarsign,
             'underscore': self.is_underscore,
-            'emoji': self.is_emoji,
             'invisible': self.invisible,
+            'emoji': self.is_emoji,
         }
 
         if not lazy_loading:
@@ -165,8 +165,8 @@ class Features:
         return '\u200c' == label  # '‌'
 
     def invisible(self, label) -> bool:
-        """Detects zero width joiner or non-joiner"""
-        return label in ('\u200d', '\u200c')  # ('‍', '‌')
+        """Detects zero width joiner or non-joiner or fe0f or fe0e"""
+        return label in ('\u200d', '\u200c', '\ufe0f', '\ufe0e')  # ('‍', '‌', )
 
     def ens_tokens(self, label) -> List[Dict]:
         """Performs ENSIP tokenization."""

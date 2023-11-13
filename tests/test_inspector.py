@@ -315,6 +315,9 @@ def test_canonical_label2(analyse_label):
     ('_', 'underscore', 'Underscore'),
     ('😵‍💫', 'emoji', 'Emoji'),
     ('\U0000200D', 'invisible', 'Invisible character'),
+    ('\U0000200C', 'invisible', 'Invisible character'),
+    ('\ufe0f', 'invisible', 'Invisible character'),
+    ('\ufe0e', 'invisible', 'Invisible character'),
     ('!', 'special', 'Special character'),
     ('-\u0610', 'special', 'Special character'),
     ('\ufffe', 'special', 'Special character'),
@@ -323,3 +326,88 @@ def test_inspector_grapheme_description(analyse_label, grapheme, type, descripti
     result = analyse_label(grapheme)
     assert result['graphemes'][0]['description'] == description
     assert result['graphemes'][0]['type'] == type
+
+def test_invisible_characters(analyse_label):
+    invisible_characters = {
+        '\U00000009': 'CHARACTER TABULATION',
+        '\U00000020': 'SPACE',
+        '\U000000A0': 'NO-BREAK SPACE',
+        '\U000000AD': 'SOFT HYPHEN',
+        '\U0000034F': 'COMBINING GRAPHEME JOINER',
+        '\U0000061C': 'ARABIC LETTER MARK',
+        '\U0000115F': 'HANGUL CHOSEONG FILLER',
+        '\U00001160': 'HANGUL JUNGSEONG FILLER',
+        '\U000017B4': 'KHMER VOWEL INHERENT AQ',
+        '\U000017B5': 'KHMER VOWEL INHERENT AA',
+        '\U0000180E': 'MONGOLIAN VOWEL SEPARATOR',
+        '\U00002000': 'EN QUAD',
+        '\U00002001': 'EM QUAD',
+        '\U00002002': 'EN SPACE',
+        '\U00002003': 'EM SPACE',
+        '\U00002004': 'THREE-PER-EM SPACE',
+        '\U00002005': 'FOUR-PER-EM SPACE',
+        '\U00002006': 'SIX-PER-EM SPACE',
+        '\U00002007': 'FIGURE SPACE',
+        '\U00002008': 'PUNCTUATION SPACE',
+        '\U00002009': 'THIN SPACE',
+        '\U0000200A': 'HAIR SPACE',
+        '\U0000200B': 'ZERO WIDTH SPACE',
+        '\U0000200C': 'ZERO WIDTH NON-JOINER',
+        '\U0000200D': 'ZERO WIDTH JOINER',
+        '\U0000200E': 'LEFT-TO-RIGHT MARK',
+        '\U0000200F': 'RIGHT-TO-LEFT MARK',
+        '\U0000202F': 'NARROW NO-BREAK SPACE',
+        '\U0000205F': 'MEDIUM MATHEMATICAL SPACE',
+        '\U00002060': 'WORD JOINER',
+        '\U00002061': 'FUNCTION APPLICATION',
+        '\U00002062': 'INVISIBLE TIMES',
+        '\U00002063': 'INVISIBLE SEPARATOR',
+        '\U00002064': 'INVISIBLE PLUS',
+        '\U0000206A': 'INHIBIT SYMMETRIC SWAPPING',
+        '\U0000206B': 'ACTIVATE SYMMETRIC SWAPPING',
+        '\U0000206C': 'INHIBIT ARABIC FORM SHAPING',
+        '\U0000206D': 'ACTIVATE ARABIC FORM SHAPING',
+        '\U0000206E': 'NATIONAL DIGIT SHAPES',
+        '\U0000206F': 'NOMINAL DIGIT SHAPES',
+        '\U00003000': 'IDEOGRAPHIC SPACE',
+        '\U00002800': 'BRAILLE PATTERN BLANK',
+        '\U00003164': 'HANGUL FILLER',
+        '\U0000FE00': '',
+        '\U0000FE01': '',
+        '\U0000FE02': '',
+        '\U0000FE03': '',
+        '\U0000FE04': '',
+        '\U0000FE05': '',
+        '\U0000FE06': '',
+        '\U0000FE07': '',
+        '\U0000FE08': '',
+        '\U0000FE09': '',
+        '\U0000FE0A': '',
+        '\U0000FE0B': '',
+        '\U0000FE0C': '',
+        '\U0000FE0D': '',
+        '\U0000FE0E': '',
+        '\U0000FE0F': '',
+        '\U0000FEFF': 'ZERO WIDTH NO-BREAK SPACE',
+        '\U0000FFA0': 'HALFWIDTH HANGUL FILLER',
+        '\U0001D159': 'MUSICAL SYMBOL NULL NOTEHEAD',
+        '\U0001D173': 'MUSICAL SYMBOL BEGIN BEAM',
+        '\U0001D174': 'MUSICAL SYMBOL END BEAM',
+        '\U0001D175': 'MUSICAL SYMBOL BEGIN TIE',
+        '\U0001D176': 'MUSICAL SYMBOL END TIE',
+        '\U0001D177': 'MUSICAL SYMBOL BEGIN SLUR',
+        '\U0001D178': 'MUSICAL SYMBOL END SLUR',
+        '\U0001D179': 'MUSICAL SYMBOL BEGIN PHRASE',
+        '\U0001D17A': 'MUSICAL SYMBOL END PHRASE',
+    }
+    
+    for invisible, name in invisible_characters.items():
+        label = f'a{invisible}b'
+        result = analyse_label(label)
+        print(result['grapheme_length'], label, [label], name, result)
+        assert result['grapheme_length'] == 3
+
+        label = f'{invisible}ab'
+        result = analyse_label(label)
+        print(result['grapheme_length'], label, [label], name, result)
+        assert result['grapheme_length'] == 3

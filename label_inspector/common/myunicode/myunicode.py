@@ -127,11 +127,24 @@ def is_emoji_sequence(text: str) -> bool:
     return text in MY_UNICODE_DATA['emoji_sequences']
 
 
+def _emoji_name_with_feof(text: str, data_name: str) -> Optional[str]:
+    """
+    Returns the name of the emoji sequence or None if text is not an emoji sequence.
+    If emoji ends with FE0F, the name is returned with 'WITH VARIATIONAL SELECTOR' suffix.
+    """
+    name = MY_UNICODE_DATA[data_name].get(text)
+    if name is None and len(text)>1:
+        name = MY_UNICODE_DATA[data_name].get(text.replace('\ufe0f', ''))
+        if name is not None:
+            name += ' WITH VARIATIONAL SELECTOR(S)'
+    return name
+
+
 def emoji_sequence_name(text: str) -> Optional[str]:
     """
     Returns the name of the emoji ZWJ sequence or None if text is not an emoji sequence.
     """
-    return MY_UNICODE_DATA['emoji_sequences'].get(text)
+    return _emoji_name_with_feof(text, 'emoji_sequences')
 
 
 def is_emoji_zwj_sequence(text: str) -> bool:
@@ -145,7 +158,7 @@ def emoji_zwj_sequence_name(text: str) -> Optional[str]:
     """
     Returns the name of the emoji ZWJ sequence or None if text is not a ZWJ sequence.
     """
-    return MY_UNICODE_DATA['emoji_zwj_sequences'].get(text)
+    return _emoji_name_with_feof(text, 'emoji_zwj_sequences')
 
 
 def is_emoji(text: str) -> bool:
