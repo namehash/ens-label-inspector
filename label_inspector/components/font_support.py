@@ -54,7 +54,7 @@ class FontSupport:
         '''
         if char == '\uFE0F':
             return True
-        char.replace('\uFE0F', '')
+        char = char.replace('\uFE0F', '')
         if char in self.supported:
             return True
         elif char in self.unsupported:
