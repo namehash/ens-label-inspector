@@ -15,4 +15,5 @@ def test_fe0f():
     with initialize_inspector_config("prod_config") as config:
         fs = FontSupport(config)
         assert fs.check_support("🤹‍♀") is True
+        assert fs.check_support("🤹‍♀️") is True
         assert fs.check_support("\uFE0F") is True
