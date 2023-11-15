@@ -110641,7 +110641,7 @@
     "\ud83d\udee9\ufe0f": "SMALL AIRPLANE",
     "\ud83d\udef0\ufe0f": "SATELLITE",
     "\ud83d\udef3\ufe0f": "PASSENGER SHIP",
-    "#\ufe0f\u20e3": "KEYCAP: \\X{23}",
+    "#\ufe0f\u20e3": "KEYCAP: #",
     "*\ufe0f\u20e3": "KEYCAP: *",
     "0\ufe0f\u20e3": "KEYCAP: 0",
     "1\ufe0f\u20e3": "KEYCAP: 1",
