@@ -430,7 +430,7 @@ def test_inspector_emoji_with_ascii(prod_test_client):
     assert json['any_scripts'] == ['Common']
     assert json['any_types'] == ['emoji']
     assert len(json['graphemes']) == 1
-    assert json['confusable_count'] == 1
+    assert json['confusable_count'] == 0
 
     grapheme = json['graphemes'][0]
 
@@ -438,10 +438,8 @@ def test_inspector_emoji_with_ascii(prod_test_client):
     assert grapheme['name'] == 'KEYCAP: *'
     assert grapheme['script'] == 'Common'
     assert grapheme['type'] == 'emoji'
-    assert grapheme['confusables_canonical']['value'] == '*⃣'
-    assert len(grapheme['confusables_other']) == 11
-    confusables = [value['value'] for value in grapheme['confusables_other']]
-    assert '8⃣' in confusables
+    assert grapheme['confusables_canonical'] is None
+    assert len(grapheme['confusables_other']) == 0
 
 
 @pytest.mark.parametrize('label,status', [

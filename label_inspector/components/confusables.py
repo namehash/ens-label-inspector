@@ -44,18 +44,19 @@ class Confusables:
         # merge both dictionaries
         for k, v in new_confusables.items():
             if k in old_confusables:
-                canonical, confusables = old_confusables[k]
-                new_canonical, new_confusables = v
-                if canonical is None:
-                    old_confusables[k][0] = new_canonical
-                else:
-                    confusables.append(new_canonical)
-                confusables += new_confusables
-                try:
-                    confusables.remove(old_confusables[k][0])
-                except ValueError:
-                    pass
-                old_confusables[k][1] = [c for c in uniq(confusables) if c is not None]
+                continue
+                # canonical, confusables = old_confusables[k]
+                # new_canonical, new_confusables = v
+                # if canonical is None:
+                #     old_confusables[k][0] = new_canonical
+                # else:
+                #     confusables.append(new_canonical)
+                # confusables += new_confusables
+                # try:
+                #     confusables.remove(old_confusables[k][0])
+                # except ValueError:
+                #     pass
+                # old_confusables[k][1] = [c for c in uniq(confusables) if c is not None]
             else:
                 old_confusables[k] = v
 
