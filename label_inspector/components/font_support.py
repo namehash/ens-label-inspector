@@ -52,6 +52,9 @@ class FontSupport:
         Check if a character is supported.
         Returns `True` if supported, `False` if unsupported, `None` if unknown.
         '''
+        if char == '\uFE0F':
+            return True
+        char = char.replace('\uFE0F', '')
         if char in self.supported:
             return True
         elif char in self.unsupported:
@@ -67,4 +70,4 @@ class FontSupport:
     def _load_emoji(self, path):
         # list of list of codepoints
         with open(path, 'r', encoding='utf-8') as f:
-            return set(''.join(chr(cp) for cp in cps) for cps in json.load(f))
+            return set(''.join(chr(cp) for cp in cps if cp != 0xFE0F) for cps in json.load(f))
