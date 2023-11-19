@@ -56,12 +56,14 @@ def test_confusable_simple():
         ('👩🏿‍🚒', True, '🧑‍🚒'),
         ('🫱🏻‍🫲🏿', True, '🤝'),
         ('🤜🏿', True, '🤜'),
-        ('*⃣', True, '*⃣'),
+        ('*⃣', False, None),
         ('🇺🇦', False, None),
         ('🏴󠁧󠁢󠁷󠁬󠁳󠁿', False, None),
         ('⛹🏽', True, '⛹'),
         ('🎅🏿', True, '🎅'),
         ('🧝🏼', True, '🧝'),
+        ('ဩ', True, 'သြ'),
+        ('¤', False, '¤'),
     ]
 )
 def test_grapheme_confusable(grapheme: str, is_confusable: bool, canonical: str):
@@ -87,7 +89,7 @@ def test_grapheme_confusable(grapheme: str, is_confusable: bool, canonical: str)
         ('f̡̨̢̝̭͓̖͉͐͐́̎̇ͪ̚', True, 'f'),
         ('🫱🏻‍🫲🏿', True, '🤝'),
         ('🤜🏿', True, '🤜'),
-        ('*⃣', True, '*⃣'),
+        ('*⃣', False, None),
         ('🇺🇦', False, None),
         ('¢', True, '¢'),
         ('¥', True, '¥'),
