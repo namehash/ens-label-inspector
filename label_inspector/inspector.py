@@ -32,6 +32,7 @@ class Inspector:
                       truncate_graphemes: int = None,
                       truncate_chars: int = None,
                       simple_confusables: bool = False,
+                      omit_cure: bool = False,
                       ) -> InspectorResult:
         config = LabelAnalysisConfig(
             label,
@@ -39,6 +40,7 @@ class Inspector:
             truncate_graphemes=truncate_graphemes,
             truncate_chars=truncate_chars,
             simple_confusables=simple_confusables,
+            omit_cure=omit_cure,
         )
 
         label_analysis = LabelAnalysis(self, config)
