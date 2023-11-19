@@ -334,6 +334,8 @@ def test_canonical_label2(analyse_label):
     ('!', 'special', 'Special character'),
     ('-\u0610', 'special', 'Special character'),
     ('\ufffe', 'special', 'Special character'),
+    ('🧌', 'emoji', 'Emoji'),
+    ('🧌️', 'emoji', 'Emoji'),
 ])
 def test_inspector_grapheme_description(analyse_label, grapheme, type, description):
     result = analyse_label(grapheme)

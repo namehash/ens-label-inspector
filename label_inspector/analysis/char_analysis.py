@@ -43,7 +43,8 @@ class CharAnalysis(AnalysisBase):
     @field
     def type(self) -> str:
         # Refers to this char's parent grapheme to detect ZWJs in emoji sequences.
-        return 'emoji' \
-            if self._char == '\u200d' \
-            and myunicode.is_emoji(self.parent_grapheme.value) \
-        else self.root.i.f.type(self._char)
+        if ((self._char == '\u200d' and myunicode.is_emoji(self.parent_grapheme.value))
+                or myunicode.is_emoji_char(self._char)):
+            return 'emoji'
+        else:
+            return self.root.i.f.type(self._char)

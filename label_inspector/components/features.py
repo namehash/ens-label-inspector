@@ -65,7 +65,7 @@ class Features:
             'dollarsign': self.is_dollarsign,
             'underscore': self.is_underscore,
             'invisible': self.invisible,
-            'emoji': myunicode.is_emoji,
+            # 'emoji': myunicode.is_emoji,
         }
 
         # if not lazy_loading:
