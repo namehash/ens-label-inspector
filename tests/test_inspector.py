@@ -36,6 +36,19 @@ def test_inspector_long(analyse_label):
     analyse_label('miinibaashkiminasiganibiitoosijiganibadagwiingweshiganibakwezhigan')
 
 
+def test_inspector_cured_label(analyse_label):
+    input = 'a a'
+    r = analyse_label(input, omit_cure=False)
+    assert r['cured_label'] == 'aa'
+    r = analyse_label(input, omit_cure=True)
+    assert r['cured_label'] is None
+
+@pytest.mark.execution_timeout(2)
+def test_inspector_cured_label_long(analyse_label):
+    input = '⎛⎝⎞⎠' * 1000
+    r = analyse_label(input, omit_cure=True)
+    assert r['cured_label'] is None
+
 @pytest.mark.execution_timeout(10)
 def test_inspector_long2(analyse_label):
     analyse_label('a' * 40000)
