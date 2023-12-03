@@ -22,5 +22,4 @@ class ConfusableMultiGraphemeAnalysis(AnalysisBase):
 
     @field
     def chars(self) -> List[CharAnalysis]:
-        return [CharAnalysis(char, self)
-                for char in self.grapheme]
+        return [CharAnalysis(char, self) for char in self.grapheme]

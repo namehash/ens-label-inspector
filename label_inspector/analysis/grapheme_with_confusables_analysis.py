@@ -21,9 +21,9 @@ def make_conf_analysis(confusable: str, parent) -> ConfusableAnalysis:
 
 @analysis_object
 class GraphemeWithConfusablesAnalysis(GraphemeAnalysis):
-    '''
+    """
     Grapheme analysis with added confusables.
-    '''
+    """
 
     def __init__(self, grapheme: str, parent):
         super().__init__(grapheme, parent)
@@ -34,7 +34,9 @@ class GraphemeWithConfusablesAnalysis(GraphemeAnalysis):
         Is the grapheme confusable?
         Uses the first character.
         """
-        return self.root.i.f.is_confusable(self.grapheme, simple=self.root.config.simple_confusables)
+        return self.root.i.f.is_confusable(
+            self.grapheme, simple=self.root.config.simple_confusables
+        )
 
     @field
     def _confusables_other_untruncated(self) -> List[ConfusableAnalysis]:
@@ -43,10 +45,16 @@ class GraphemeWithConfusablesAnalysis(GraphemeAnalysis):
         Uses the first character.
         """
         # optimize for non-confusable characters
-        return [] if not self._is_confusable \
-            else [make_conf_analysis(conf_text, self)
-                  for conf_text
-                  in self.root.i.f.get_confusables(self.grapheme, simple=self.root.config.simple_confusables)]
+        return (
+            []
+            if not self._is_confusable
+            else [
+                make_conf_analysis(conf_text, self)
+                for conf_text in self.root.i.f.get_confusables(
+                    self.grapheme, simple=self.root.config.simple_confusables
+                )
+            ]
+        )
 
     @field
     def confusables_other(self) -> List[ConfusableAnalysis]:
@@ -54,7 +62,9 @@ class GraphemeWithConfusablesAnalysis(GraphemeAnalysis):
         Truncated confusables for the grapheme.
         Uses the first character.
         """
-        return self._confusables_other_untruncated[:self.root.config.truncate_confusables]
+        return self._confusables_other_untruncated[
+            : self.root.config.truncate_confusables
+        ]
 
     @field
     def confusables_canonical(self) -> Optional[ConfusableAnalysis]:
@@ -66,7 +76,9 @@ class GraphemeWithConfusablesAnalysis(GraphemeAnalysis):
         if not self._is_confusable:
             return None
 
-        canonical = self.root.i.f.get_canonical(self.grapheme, simple=self.root.config.simple_confusables)
+        canonical = self.root.i.f.get_canonical(
+            self.grapheme, simple=self.root.config.simple_confusables
+        )
         if canonical is None:
             return None
         return make_conf_analysis(canonical, self)

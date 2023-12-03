@@ -65,14 +65,14 @@ How to:
 from typing import Generic, Optional, List, Dict, TypeVar, Callable
 
 
-T = TypeVar('T')
-R = TypeVar('R')
+T = TypeVar("T")
+R = TypeVar("R")
 
 
 def agg_all(items: List[T]) -> Optional[T]:
-    '''
+    """
     Returns the first item if all items are equal, otherwise None.
-    '''
+    """
     if len(items) == 0:
         return None
     it0 = items[0]
@@ -80,23 +80,23 @@ def agg_all(items: List[T]) -> Optional[T]:
 
 
 def agg_any(items: List[T]) -> List[T]:
-    '''
+    """
     Returns a list of unique items.
-    '''
+    """
     return list(set(items))
 
 
 def agg_only(items: List[T]) -> Optional[T]:
-    '''
+    """
     Returns the first item if there is only one item, otherwise None.
-    '''
+    """
     return items[0] if len(items) == 1 else None
 
 
 class field(Generic[R]):
     def __init__(self, func: Callable[..., R]):
         self.func = func
-        self._is_public_field = func.__name__[0] != '_'
+        self._is_public_field = func.__name__[0] != "_"
 
     def __get__(self, obj, cls) -> R:
         if obj is None:
@@ -106,10 +106,12 @@ class field(Generic[R]):
 
 
 def analysis_object(cls):
-    cls._FIELDS = [name
-                   for name in dir(cls)
-                   if name[0] != '_'
-                   if hasattr(getattr(cls, name), '_is_public_field')]
+    cls._FIELDS = [
+        name
+        for name in dir(cls)
+        if name[0] != "_"
+        if hasattr(getattr(cls, name), "_is_public_field")
+    ]
     return cls
 
 
