@@ -1,7 +1,15 @@
 from __future__ import annotations
 from typing import List, Dict, Optional, Iterable, TYPE_CHECKING
 
-from ens_normalize import ens_normalize, ens_beautify, ens_cure, ens_process, ENSProcessResult, DisallowedSequence, CurableSequence
+from ens_normalize import (
+    ens_normalize,
+    ens_beautify,
+    ens_cure,
+    ens_process,
+    ENSProcessResult,
+    DisallowedSequence,
+    CurableSequence,
+)
 
 from .analysis_framework import AnalysisBase, analysis_object, field, agg_all, agg_any
 from .grapheme_analysis import GraphemeAnalysis
@@ -17,7 +25,11 @@ if TYPE_CHECKING:
 
 
 def count_words(tokenizeds: List[Dict]) -> int:
-    count = [len(tokenized['tokens']) for tokenized in tokenizeds if '' not in tokenized['tokens']]
+    count = [
+        len(tokenized["tokens"])
+        for tokenized in tokenizeds
+        if "" not in tokenized["tokens"]
+    ]
     if not count:
         return 0
     else:
@@ -25,15 +37,16 @@ def count_words(tokenizeds: List[Dict]) -> int:
 
 
 class LabelAnalysisConfig:
-    def __init__(self,
-                 label: str,
-                 truncate_confusables: int = None,
-                 truncate_graphemes: int = None,
-                 truncate_chars: int = None,
-                 simple_confusables: bool = False,
-                 long_label: int = 30,
-                 omit_cure: bool = False,
-                 ):
+    def __init__(
+        self,
+        label: str,
+        truncate_confusables: int = None,
+        truncate_graphemes: int = None,
+        truncate_chars: int = None,
+        simple_confusables: bool = False,
+        long_label: int = 30,
+        omit_cure: bool = False,
+    ):
         self.label = label
         self.truncate_confusables = truncate_confusables
         self.truncate_graphemes = truncate_graphemes
@@ -64,8 +77,11 @@ class LabelAnalysis(AnalysisBase):
         """
         Untruncated char analysis.
         """
-        return (char for grapheme in self._graphemes_untruncated
-                     for char in grapheme._chars_untruncated)
+        return (
+            char
+            for grapheme in self._graphemes_untruncated
+            for char in grapheme._chars_untruncated
+        )
 
     @field
     def _raw_graphemes(self) -> List[str]:
@@ -92,7 +108,11 @@ class LabelAnalysis(AnalysisBase):
 
     @property
     def _ens_process_any_error(self):
-        return self._ens_process_result.error or (self._ens_process_result.normalizations[0] if self._ens_process_result.normalizations else None)
+        return self._ens_process_result.error or (
+            self._ens_process_result.normalizations[0]
+            if self._ens_process_result.normalizations
+            else None
+        )
 
     @property
     def _ens_error_is_curable(self):
@@ -113,9 +133,9 @@ class LabelAnalysis(AnalysisBase):
     @field
     def status(self) -> str:
         if self.is_normalized:
-            return 'normalized'
+            return "normalized"
         else:
-            return 'unnormalized'
+            return "unnormalized"
 
     @field
     def char_length(self) -> Optional[int]:
@@ -130,15 +150,14 @@ class LabelAnalysis(AnalysisBase):
         """
         Untruncated grapheme analysis.
         """
-        return [GraphemeWithConfusablesAnalysis(g, self)
-                for g in self._raw_graphemes]
+        return [GraphemeWithConfusablesAnalysis(g, self) for g in self._raw_graphemes]
 
     @field
     def graphemes(self) -> Optional[List[GraphemeWithConfusablesAnalysis]]:
         """
         Truncated grapheme analysis.
         """
-        return self._graphemes_untruncated[:self.config.truncate_graphemes]
+        return self._graphemes_untruncated[: self.config.truncate_graphemes]
 
     # Aggregates (using untruncated grapheme analysis)
 
@@ -157,12 +176,12 @@ class LabelAnalysis(AnalysisBase):
         had_common = False
         strong_script = None
         for script in scripts:
-            if script in ('Unknown', 'Combined'):
+            if script in ("Unknown", "Combined"):
                 # handles case 1
                 return None
-            elif script == 'Inherited':
+            elif script == "Inherited":
                 had_inherited = True
-            elif script == 'Common':
+            elif script == "Common":
                 had_common = True
             elif strong_script is None:
                 strong_script = script
@@ -170,7 +189,11 @@ class LabelAnalysis(AnalysisBase):
                 # handles case 4
                 return None
         # handles cases 2 and 3
-        return strong_script or ('Common' if had_common else None) or ('Inherited' if had_inherited else None)
+        return (
+            strong_script
+            or ("Common" if had_common else None)
+            or ("Inherited" if had_inherited else None)
+        )
 
     @field
     def any_scripts(self) -> Optional[List[str]]:
@@ -202,7 +225,7 @@ class LabelAnalysis(AnalysisBase):
                 return None
             else:
                 canonicals.append(grapheme.confusables_canonical.value)
-        return ''.join(canonicals)
+        return "".join(canonicals)
 
     @field
     def normalized_canonical_label(self) -> Optional[str]:
@@ -238,7 +261,9 @@ class LabelAnalysis(AnalysisBase):
 
     @field
     def font_support_all_os(self) -> Optional[bool]:
-        return aggregate_font_support([g.font_support_all_os for g in self._graphemes_untruncated])
+        return aggregate_font_support(
+            [g.font_support_all_os for g in self._graphemes_untruncated]
+        )
 
     # \ COMMON
 
@@ -294,12 +319,20 @@ class LabelAnalysis(AnalysisBase):
         if self.is_response_model_unnormalized() and self._ens_error_is_curable:
             # need graphemes for char_class to work
             graphemes = myunicode.grapheme.split(self._ens_process_any_error.sequence)
-            return [c for g in graphemes for c in GraphemeAnalysis(g, self)._chars_untruncated]
+            return [
+                c
+                for g in graphemes
+                for c in GraphemeAnalysis(g, self)._chars_untruncated
+            ]
 
     @field
     def suggested_replacement(self) -> Optional[List[CharAnalysis]]:
         if self.is_response_model_unnormalized() and self._ens_error_is_curable:
             graphemes = myunicode.grapheme.split(self._ens_process_any_error.suggested)
-            return [c for g in graphemes for c in GraphemeAnalysis(g, self)._chars_untruncated]
+            return [
+                c
+                for g in graphemes
+                for c in GraphemeAnalysis(g, self)._chars_untruncated
+            ]
 
     # \ UNNORMALIZED

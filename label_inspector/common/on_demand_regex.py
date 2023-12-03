@@ -9,7 +9,7 @@ class OnDemandRegex:
         if not lazy:
             for name in patterns:
                 self[name]
-    
+
     @cache
     def __getitem__(self, key: str):
         return regex.compile(self.patterns[key])

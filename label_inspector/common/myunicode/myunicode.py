@@ -16,9 +16,9 @@ def name(chr: str, default=None) -> str:
     returns default if given or throws an exception.
     """
     if len(chr) != 1:
-        raise TypeError('name() argument 1 must be a unicode character, not str')
+        raise TypeError("name() argument 1 must be a unicode character, not str")
     try:
-        return MY_UNICODE_DATA['name'][ord(chr)]
+        return MY_UNICODE_DATA["name"][ord(chr)]
     except KeyError:
         try:
             return get_special_name(chr)
@@ -37,9 +37,9 @@ def category(chr: str) -> str:
     If the character does not have a category, returns 'Cn'.
     """
     if len(chr) != 1:
-        raise TypeError('category() argument must be a unicode character, not str')
+        raise TypeError("category() argument must be a unicode character, not str")
     try:
-        return MY_UNICODE_DATA['category'][ord(chr)]
+        return MY_UNICODE_DATA["category"][ord(chr)]
     except KeyError:
         try:
             return get_special_category(chr)
@@ -54,9 +54,9 @@ def combining(chr: str) -> int:
     If the character does not have a combining class, returns 0.
     """
     if len(chr) != 1:
-        raise TypeError('combining() argument must be a unicode character, not str')
+        raise TypeError("combining() argument must be a unicode character, not str")
     try:
-        return MY_UNICODE_DATA['combining'][ord(chr)]
+        return MY_UNICODE_DATA["combining"][ord(chr)]
     except KeyError:
         try:
             return get_special_combining(chr)
@@ -71,14 +71,14 @@ def block_of(chr: str) -> Optional[str]:
     If the character does not have a block, returns None.
     """
     if len(chr) != 1:
-        raise TypeError('block_of() argument must be a unicode character, not str')
+        raise TypeError("block_of() argument must be a unicode character, not str")
     return bisect_block(chr)
 
 
 def script_of(text: str) -> Optional[str]:
     """
     Returns the script of text, or None if text has many non-neutral scripts.
-    
+
     Common and Inherited scripts are considered neutral.
 
     Empty string returns None.
@@ -97,11 +97,11 @@ def script_of(text: str) -> Optional[str]:
         elif s != script:
             # differing scripts
 
-            if script == 'Common':
+            if script == "Common":
                 if s not in NEUTRAL_SCRIPTS:
                     # common overriden only by non-neutral
                     script = s
-            elif script == 'Inherited':
+            elif script == "Inherited":
                 # inherited overridden by everything
                 script = s
             elif s not in NEUTRAL_SCRIPTS:
@@ -116,7 +116,7 @@ def is_emoji_char(chr: str) -> bool:
     Returns True if the character is an emoji.
     """
     if len(chr) != 1:
-        raise TypeError('is_emoji() argument must be a unicode character, not str')
+        raise TypeError("is_emoji() argument must be a unicode character, not str")
     return bisect_emoji(chr)
 
 
@@ -124,7 +124,7 @@ def is_emoji_sequence(text: str) -> bool:
     """
     Returns True if text is a valid emoji sequence.
     """
-    return text in MY_UNICODE_DATA['emoji_sequences']
+    return text in MY_UNICODE_DATA["emoji_sequences"]
 
 
 def _emoji_name_with_feof(text: str, data_name: str) -> Optional[str]:
@@ -133,10 +133,10 @@ def _emoji_name_with_feof(text: str, data_name: str) -> Optional[str]:
     If emoji ends with FE0F, the name is returned with 'WITH VARIATIONAL SELECTOR' suffix.
     """
     name = MY_UNICODE_DATA[data_name].get(text)
-    if name is None and len(text)>1:
-        name = MY_UNICODE_DATA[data_name].get(text.replace('\ufe0f', ''))
+    if name is None and len(text) > 1:
+        name = MY_UNICODE_DATA[data_name].get(text.replace("\ufe0f", ""))
         if name is not None:
-            name += ' WITH VARIATIONAL SELECTOR(S)'
+            name += " WITH VARIATIONAL SELECTOR(S)"
     return name
 
 
@@ -144,21 +144,21 @@ def emoji_sequence_name(text: str) -> Optional[str]:
     """
     Returns the name of the emoji ZWJ sequence or None if text is not an emoji sequence.
     """
-    return _emoji_name_with_feof(text, 'emoji_sequences')
+    return _emoji_name_with_feof(text, "emoji_sequences")
 
 
 def is_emoji_zwj_sequence(text: str) -> bool:
     """
     Returns True if text is a valid emoji ZWJ sequence.
     """
-    return text in MY_UNICODE_DATA['emoji_zwj_sequences']
+    return text in MY_UNICODE_DATA["emoji_zwj_sequences"]
 
 
 def emoji_zwj_sequence_name(text: str) -> Optional[str]:
     """
     Returns the name of the emoji ZWJ sequence or None if text is not a ZWJ sequence.
     """
-    return _emoji_name_with_feof(text, 'emoji_zwj_sequences')
+    return _emoji_name_with_feof(text, "emoji_zwj_sequences")
 
 
 def is_emoji(text: str) -> bool:
@@ -167,15 +167,19 @@ def is_emoji(text: str) -> bool:
     """
     # all multi-character emoji graphemes should be present in emoji-sequences or emoji-zwj-sequences
     # if it is not there, then we assume that it can be emoji only if it has only one character
-    return is_emoji_sequence(text) \
-        or is_emoji_zwj_sequence(text) \
+    return (
+        is_emoji_sequence(text)
+        or is_emoji_zwj_sequence(text)
         or (len(text) == 1 and is_emoji_char(text[0]))
+    )
 
 
 def emoji_iterator() -> Iterator[str]:
-    return chain(emoji_char_iterator(),
-                 MY_UNICODE_DATA['emoji_sequences'].keys(),
-                 MY_UNICODE_DATA['emoji_zwj_sequences'].keys())
+    return chain(
+        emoji_char_iterator(),
+        MY_UNICODE_DATA["emoji_sequences"].keys(),
+        MY_UNICODE_DATA["emoji_zwj_sequences"].keys(),
+    )
 
 
 def emoji_name(text: str) -> Optional[str]:
@@ -196,5 +200,5 @@ def is_numeric(chr: str) -> bool:
     Returns True if the character is numeric (category N).
     """
     if len(chr) != 1:
-        raise TypeError('is_numeric() argument must be a unicode character, not str')
-    return category(chr).startswith('N')
+        raise TypeError("is_numeric() argument must be a unicode character, not str")
+    return category(chr).startswith("N")

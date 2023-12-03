@@ -1,18 +1,22 @@
 import logging
-from typing import List
 from fastapi import FastAPI
 
 from label_inspector.config import initialize_inspector_config
 from label_inspector.inspector import Inspector
-from label_inspector.models import InspectorSingleRequest, InspectorBatchRequest, InspectorResult, InspectorBatchResult
+from label_inspector.models import (
+    InspectorSingleRequest,
+    InspectorBatchRequest,
+    InspectorResult,
+    InspectorBatchResult,
+)
 
 
-logger = logging.getLogger('label_inspector')
+logger = logging.getLogger("label_inspector")
 app = FastAPI()
 
 
 def init_inspector():
-    with initialize_inspector_config('prod_config') as config:
+    with initialize_inspector_config("prod_config") as config:
         logger.setLevel(config.app.logging_level)
         for handler in logger.handlers:
             handler.setLevel(config.app.logging_level)

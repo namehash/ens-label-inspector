@@ -6,8 +6,8 @@ from more_itertools import chunked
 from .data import MY_UNICODE_DATA
 
 
-RANGES = MY_UNICODE_DATA['emojis']
-STARTS, IS_EMOJI = RANGES['starts'], RANGES['is_emoji']
+RANGES = MY_UNICODE_DATA["emojis"]
+STARTS, IS_EMOJI = RANGES["starts"], RANGES["is_emoji"]
 
 
 def bisect_emoji(chr: str) -> bool:
