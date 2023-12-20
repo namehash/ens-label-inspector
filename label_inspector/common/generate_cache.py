@@ -19,7 +19,7 @@ def main():
         shutil.rmtree(pickle_cache.CACHE_DIR, ignore_errors=True)
 
         for module, class_name, func_name in pickle_cache.REGISTERED_FUNCTIONS:
-            print(f'Generating {module}{class_name}.{func_name}')
+            print(f'Generating {module} {class_name}.{func_name}')
             exec(f'import {module}')
             try:
                 # try default constructor

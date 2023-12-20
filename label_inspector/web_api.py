@@ -8,6 +8,10 @@ from label_inspector.models import InspectorSingleRequest, InspectorBatchRequest
 
 
 logger = logging.getLogger('label_inspector')
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(stream_handler)
+
 app = FastAPI()
 
 

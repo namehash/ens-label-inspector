@@ -34,27 +34,27 @@ class Features:
 
         self.compiled_regexp_patterns = OnDemandRegex(self.regexp_patterns, lazy=lazy_loading)
 
-        self.classes_config: Dict[str, Callable] = {
-            'other_letter': self.is_letter,
-            'other_number': self.simple_number,
-            'hyphen': self.is_hyphen,
-            'invisible': self.invisible,
-            'emoji': self.is_emoji,
-            'simple': self.simple,
-            'simple_letter': self.simple_letter,
-            'simple_number': self.simple_number,
-            'simple_letter_emoji': self.simple_letter_emoji,
-        }
-        self.token_classes_config: Dict[str, Callable] = {
-            'other_letter': self.is_letter,
-            'other_number': self.simple_number,
-            'hyphen': self.is_hyphen,
-            'invisible': self.invisible,
-            'emoji': self.is_emoji,
-            'simple': self.simple,
-            'simple_letter': self.simple_letter,
-            'simple_number': self.simple_number,
-        }
+        # self.classes_config: Dict[str, Callable] = {
+        #     'other_letter': self.is_letter,
+        #     'other_number': self.simple_number,
+        #     'hyphen': self.is_hyphen,
+        #     'invisible': self.invisible,
+        #     'emoji': self.is_emoji,
+        #     'simple': self.simple,
+        #     'simple_letter': self.simple_letter,
+        #     'simple_number': self.simple_number,
+        #     # 'simple_letter_emoji': self.simple_letter_emoji,
+        # }
+        # self.token_classes_config: Dict[str, Callable] = {
+        #     'other_letter': self.is_letter,
+        #     'other_number': self.simple_number,
+        #     'hyphen': self.is_hyphen,
+        #     'invisible': self.invisible,
+        #     'emoji': self.is_emoji,
+        #     'simple': self.simple,
+        #     'simple_letter': self.simple_letter,
+        #     'simple_number': self.simple_number,
+        # }
 
         self.types_config: Dict[str, Callable] = {
             'simple_letter': self.simple_letter,
@@ -65,24 +65,24 @@ class Features:
             'dollarsign': self.is_dollarsign,
             'underscore': self.is_underscore,
             'invisible': self.invisible,
-            'emoji': self.is_emoji,
+            'emoji': myunicode.is_emoji,
         }
 
-        if not lazy_loading:
-            self.emoji_regexp
+        # if not lazy_loading:
+        #     self.emoji_regexp
 
-    @cached_property
-    def emoji_regexp(self):
-        from emoji import unicode_codes
-        emojis = sorted(unicode_codes.EMOJI_DATA, key=len, reverse=True)
-        emoji_pattern = u'(' + u'|'.join(regex.escape(u) for u in emojis) + u')'
-        patterns = {
-            'is_emoji': '^(' + emoji_pattern + ')+$',
-            'simple-emoji': '^([a-z0-9-]|' + emoji_pattern + ')+$',
-            'simple_letter-emoji': '^([a-z]|' + emoji_pattern + ')+$',
-        }
-        compiled = {name: regex.compile(pattern) for name, pattern in patterns.items()}
-        return compiled
+    # @cached_property
+    # def emoji_regexp(self):
+    #     from emoji import unicode_codes
+    #     emojis = sorted(unicode_codes.EMOJI_DATA, key=len, reverse=True)
+    #     emoji_pattern = u'(' + u'|'.join(regex.escape(u) for u in emojis) + u')'
+    #     patterns = {
+    #         'is_emoji': '^(' + emoji_pattern + ')+$',
+    #         'simple-emoji': '^([a-z0-9-]|' + emoji_pattern + ')+$',
+    #         'simple_letter-emoji': '^([a-z]|' + emoji_pattern + ')+$',
+    #     }
+    #     compiled = {name: regex.compile(pattern) for name, pattern in patterns.items()}
+    #     return compiled
 
     def length(self, label) -> int:
         """Returns number of Unicode chars in the string."""
@@ -101,9 +101,9 @@ class Features:
         """Checks if whole string matches regular expression of lowercase Latin letters."""
         return self.compiled_regexp_patterns['simple_letter'].match(label) is not None
 
-    def simple_letter_emoji(self, label) -> bool:  # TODO: slow
-        """Checks if whole string matches regular expression of lowercase Latin letters."""
-        return self.emoji_regexp['simple_letter-emoji'].match(label) is not None
+    # def simple_letter_emoji(self, label) -> bool:  # TODO: slow
+    #     """Checks if whole string matches regular expression of lowercase Latin letters."""
+    #     return self.emoji_regexp['simple_letter-emoji'].match(label) is not None
 
     def numeric(self, label) -> bool:
         """Checks if whole string matches regular expression of Latin digits."""
@@ -117,14 +117,14 @@ class Features:
         """Checks if whole string matches regular expression of Latin lowercase letters or digits or hyphen."""
         return self.compiled_regexp_patterns['simple'].match(label) is not None
 
-    def is_emoji(self, label) -> bool:
-        """Checks if whole string matches regular expression of emojis."""
-        return self.emoji_regexp['is_emoji'].match(label) is not None
+    # def is_emoji(self, label) -> bool:
+    #     """Checks if whole string matches regular expression of emojis."""
+    #     return self.emoji_regexp['is_emoji'].match(label) is not None
 
-    def simple_emoji(self, label) -> bool:
-        """Checks if whole string matches regular expression of Latin lowercase letters or digits or hyphen or 
-        emojis. """
-        return self.emoji_regexp['simple-emoji'].match(label) is not None
+    # def simple_emoji(self, label) -> bool:
+    #     """Checks if whole string matches regular expression of Latin lowercase letters or digits or hyphen or
+    #     emojis. """
+    #     return self.emoji_regexp['simple-emoji'].match(label) is not None
 
     def is_letter(self, label) -> bool:
         """Checks if string matches regular expression of lowercase letters."""
@@ -299,21 +299,21 @@ class Features:
         """Returns string after decomposition."""
         return unicodedata.normalize('NFD', label)
 
-    def classes(self, label) -> List[str]:
-        """Return classes of string: letter,number,hyphen,emoji,simple,invisible"""
-        result = []
-        for c, func in self.classes_config.items():
-            if func(label):
-                result.append(c)
-        return result
+    # def classes(self, label) -> List[str]:
+    #     """Return classes of string: letter,number,hyphen,emoji,simple,invisible"""
+    #     result = []
+    #     for c, func in self.classes_config.items():
+    #         if func(label):
+    #             result.append(c)
+    #     return result
 
-    def token_classes(self, label) -> List[str]:
-        """Return classes of string: letter,number,hyphen,emoji,simple,invisible"""
-        result = []
-        for c, func in self.token_classes_config.items():
-            if func(label):
-                result.append(c)
-        return result
+    # def token_classes(self, label) -> List[str]:
+    #     """Return classes of string: letter,number,hyphen,emoji,simple,invisible"""
+    #     result = []
+    #     for c, func in self.token_classes_config.items():
+    #         if func(label):
+    #             result.append(c)
+    #     return result
 
     def type(self, label) -> str:
         """Return classes of char: simple_letter,simple_number,other_letter,other_number,hyphen,emoji,invisible,special"""
