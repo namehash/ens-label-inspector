@@ -17,7 +17,7 @@ exclude = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.12"
+python = ">=3.9,<3.13"
 ens-normalize = "^3.0.7"
 fastapi = "^0.104.0"
 hydra-core = "^1.3.2"
