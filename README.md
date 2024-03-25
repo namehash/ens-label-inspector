@@ -50,3 +50,9 @@ t:8000
 The Label Inspector includes a handler for [Amazon AWS Lambda](https://aws.amazon.com/lambda/). It is available in the `label_inspector.lambda` module. You can use it to create a Lambda function that will respond to HTTP requests. It uses the [mangum](https://mangum.io) library.
 
 See the included [Dockerfile](/Dockerfile) for an example of how to build a Lambda deployment package.
+
+## License
+
+Licensed under the MIT License, Copyright © 2023-present [NameHash Labs](https://namehashlabs.org).
+
+See [LICENSE](./LICENSE) for more information.
