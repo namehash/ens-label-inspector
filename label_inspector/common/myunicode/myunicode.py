@@ -200,6 +200,13 @@ def is_numeric(chr: str) -> bool:
     return category(chr).startswith('N')
 
 
+def unicode_version(chr: str) -> Optional[str]:
+    """
+    Returns the unicode version of the character or None if it is not assigned to any version.
+    """
+    return MY_UNICODE_DATA['versions']['unicode'].get(chr)
+
+
 def emoji_version(text: str) -> Optional[str]:
     """
     Returns the emoji version of the grapheme or None if it is not assigned to any version.
