@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from label_inspector.common import myunicode
 
@@ -48,3 +48,11 @@ class CharAnalysis(AnalysisBase):
             return 'emoji'
         else:
             return self.root.i.f.type(self._char)
+
+    @field
+    def unicode_version(self) -> Optional[str]:
+        return myunicode.unicode_version(self._char)
+
+    @field
+    def emoji_version(self) -> Optional[str]:
+        return myunicode.emoji_version(self._char)

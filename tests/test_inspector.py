@@ -429,6 +429,18 @@ def test_invisible_characters(analyse_label):
 
 
 @pytest.mark.parametrize(
+    'c,version',
+    [
+        ('🪿', '15.0'),
+        ('🩼', '14.0'),
+    ]
+)
+def test_unicode_version(analyse_label, c, version):
+    result = analyse_label(c)
+    assert result['graphemes'][0]['unicode_version'] == version
+
+
+@pytest.mark.parametrize(
     'emoji,version',
     [
         ('🫏', 'E15.0'),
