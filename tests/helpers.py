@@ -94,6 +94,7 @@ def check_inspector_base_response(label,
             'confusables_other',
             'confusables_canonical',
             'description',
+            'unicode_version',
             'emoji_version',
         ])
         assert type(grapheme['value']) == str
@@ -118,6 +119,7 @@ def check_inspector_base_response(label,
                     'type',
                     'font_support_all_os',
                     'description',
+                    'unicode_version',
                     'emoji_version',
                 ])
 
@@ -141,6 +143,7 @@ def check_inspector_base_response(label,
                     'type',
                     'font_support_all_os',
                     'description',
+                    'unicode_version',
                     'emoji_version',
                 ])
 
@@ -161,6 +164,8 @@ def check_inspector_base_response(label,
             'codepoint',
             'link',
             'type',
+            'unicode_version',
+            'emoji_version',
         ])
 
         assert char['value'] == name_char

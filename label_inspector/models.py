@@ -63,6 +63,10 @@ class InspectorCharResult(BaseModel):
             '* `invisible` - zero width joiner or non-joiner (which is not part of correct emoji)\n'
             '* `special` - for any character that does not match one of the other classifications'
         )
+    unicode_version: Optional[str] = Field(description="Unicode Version of the character.\n"
+                                                        "* `null` if the character is not assigned to any version")
+    emoji_version: Optional[str] = Field(description="Unicode Emoji Version of the character.\n"
+                                                     "* `null` if the character is not assigned to any version")
 
 
 class InspectorGraphemeResult(BaseModel):
@@ -99,6 +103,9 @@ class InspectorGraphemeResult(BaseModel):
     )
 
     description: str = Field(description="Description of the grapheme type.")
+
+    unicode_version: Optional[str] = Field(description="Unicode Version of the grapheme.\n"
+                                                       "* `null` if the grapheme is not assigned to any version")
 
     emoji_version: Optional[str] = Field(description="Unicode Emoji Version of the grapheme.\n"
                                                      "* `null` if the grapheme is not assigned to any version")

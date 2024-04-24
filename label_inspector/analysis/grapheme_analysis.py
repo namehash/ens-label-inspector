@@ -11,6 +11,10 @@ if TYPE_CHECKING:
     from .label_analysis import LabelAnalysis
 
 
+def v2num(version: str) -> int:
+    return int(version.replace('.', ''))
+
+
 @analysis_object
 class GraphemeAnalysis(AnalysisBase):
     '''
@@ -114,6 +118,17 @@ class GraphemeAnalysis(AnalysisBase):
             return 'Invisible character'
         elif self.type == 'special':
             return 'Special character'
+
+    @field
+    def unicode_version(self) -> Optional[str]:
+        highest_version = myunicode.unicode_version(self.grapheme[0])
+        for char in self.grapheme[1:]:
+            version = myunicode.unicode_version(char)
+            if version is None:
+                continue
+            if highest_version is None or v2num(version) > v2num(highest_version):
+                highest_version = version
+        return highest_version
 
     @field
     def emoji_version(self) -> Optional[str]:
