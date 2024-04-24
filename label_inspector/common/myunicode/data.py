@@ -21,6 +21,10 @@ class MyUnicodeData:
             make_int_dict(json_data, 'combining')
             remove_fe0f(json_data, 'emoji_sequences')
             remove_fe0f(json_data, 'emoji_zwj_sequences')
+            versions = json_data['versions']['emoji']
+            versions.update(json_data['versions']['emoji_seq'])
+            versions.update(json_data['versions']['emoji_zwj_seq'])
+            remove_fe0f(json_data['versions'], 'emoji')
             # replace None with {} to get KeyError if no special data found
             json_data['special']['data'] = [{} if d is None else d for d in json_data['special']['data']]
             return json_data
