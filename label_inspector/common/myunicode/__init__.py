@@ -13,6 +13,7 @@ from .myunicode import (
     emoji_iterator,
     emoji_name,
     is_numeric,
+    unicode_version,
     emoji_version,
 )
 

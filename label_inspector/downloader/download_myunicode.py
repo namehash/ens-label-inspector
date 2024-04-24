@@ -40,6 +40,10 @@ EMOJI_SEQ_REGEX = regex.compile(r'^(?P<sequence>[^#;\n]*)[^\S\r\n]*;(?P<field_ty
 # e.g. 1F468 200D 1F466 ; RGI_Emoji_ZWJ_Sequence ; family: man, boy # E4.0 [1] (👨‍👦)
 EMOJI_ZWJ_SEQ_REGEX = regex.compile(r'^(?<sequence>[0-9a-fA-F ]+);[^;]+;(?<name>[^#]+).*# *(?<version>E\d+\.\d+).*$')
 
+# 09BC          ; 1.1 #       BENGALI SIGN NUKTA
+# 09BE..09C4    ; 1.1 #   [7] BENGALI VOWEL SIGN AA..BENGALI VOWEL SIGN VOCALIC RR
+DERIVED_AGE_REGEX = regex.compile(r'^(?<start>[0-9a-fA-F]+)(?:..(?<stop>[0-9a-fA-F]+))?\s*;\s*(?<version>\d+\.\d+)\s*#.*$')
+
 
 def get_data_lines(lines: Iterable[str]) -> Iterable[str]:
     lines = map(str.strip, lines)
@@ -264,6 +268,21 @@ def download_emoji_zwj_seqs():
     return names, versions
 
 
+def download_derived_age():
+    r = requests.get(f'https://www.unicode.org/Public/{UNICODE_VERSION}/ucd/DerivedAge.txt')
+    versions = {}
+    for line in get_data_lines(r.text.splitlines()):
+        m = DERIVED_AGE_REGEX.match(line)
+        start = int(m.group('start'), 16)
+        stop = int(m.group('stop'), 16) if m.group('stop') is not None else start
+        version = m.group('version')
+
+        for e in range(start, stop + 1):
+            versions[chr(e)] = version
+
+    return versions
+
+
 def create_myunicode_data():
     character_data, special_ranges = download_character_data()
     blocks_bisect = download_blocks()
@@ -271,6 +290,10 @@ def create_myunicode_data():
     emojis_bisect, emoji_versions = download_emoji_ranges()
     emoji_seqs, emoji_seq_versions = download_emoji_seqs()
     emoji_zwj_seqs, emoji_zwj_seq_versions = download_emoji_zwj_seqs()
+    unicode_versions = download_derived_age()
+
+    emoji_versions.update(emoji_seq_versions)
+    emoji_versions.update(emoji_zwj_seq_versions)
 
     data = {
         'name': {code: character_data[code]['name'] for code in character_data},
@@ -295,9 +318,8 @@ def create_myunicode_data():
         'emoji_sequences': emoji_seqs,
         'emoji_zwj_sequences': emoji_zwj_seqs,
         'versions': {
+            'unicode': unicode_versions,
             'emoji': emoji_versions,
-            'emoji_seq': emoji_seq_versions,
-            'emoji_zwj_seq': emoji_zwj_seq_versions,
         },
     }
 

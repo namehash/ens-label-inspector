@@ -478,6 +478,17 @@ def test_grapheme_iter_no_hangul():
 
 
 @pytest.mark.parametrize(
+    'c,version',
+    [
+        ('🪿', '15.0'),
+        ('🩼', '14.0'),
+    ]
+)
+def test_unicode_version(c, version):
+    assert myunicode.unicode_version(c) == version
+
+
+@pytest.mark.parametrize(
     'emoji,version',
     [
         ('🫏\ufe0f', 'E15.0'),
