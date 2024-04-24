@@ -475,3 +475,15 @@ def test_grapheme_iter_no_hangul():
             continue
 
         assert myunicode.grapheme.split(line) == re.findall(r'\X', line)
+
+
+@pytest.mark.parametrize(
+    'emoji,version',
+    [
+        ('🫏\ufe0f', 'E15.0'),
+        ('🫷🏼\ufe0f', 'E15.0'),
+        ('🧑‍🧑‍🧒\ufe0f', 'E15.1'),
+    ]
+)
+def test_emoji_version(emoji, version):
+    assert myunicode.emoji_version(emoji) == version

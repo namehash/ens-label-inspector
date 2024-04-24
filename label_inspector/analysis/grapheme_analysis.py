@@ -114,3 +114,7 @@ class GraphemeAnalysis(AnalysisBase):
             return 'Invisible character'
         elif self.type == 'special':
             return 'Special character'
+
+    @field
+    def emoji_version(self) -> Optional[str]:
+        return myunicode.emoji_version(self.grapheme)

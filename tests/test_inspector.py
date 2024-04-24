@@ -426,3 +426,16 @@ def test_invisible_characters(analyse_label):
         result = analyse_label(label)
         print(result['grapheme_length'], label, [label], name, result)
         assert result['grapheme_length'] == 3
+
+
+@pytest.mark.parametrize(
+    'emoji,version',
+    [
+        ('🫏', 'E15.0'),
+        ('🫷🏼', 'E15.0'),
+        ('🧑‍🧑‍🧒', 'E15.1'),
+    ]
+)
+def test_emoji_version(analyse_label, emoji, version):
+    result = analyse_label(emoji)
+    assert result['graphemes'][0]['emoji_version'] == version

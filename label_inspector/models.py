@@ -100,6 +100,9 @@ class InspectorGraphemeResult(BaseModel):
 
     description: str = Field(description="Description of the grapheme type.")
 
+    emoji_version: Optional[str] = Field(description="Unicode Emoji Version of the grapheme.\n"
+                                                     "* `null` if the grapheme is not assigned to any version")
+
 class InspectorConfusableGraphemeResult(InspectorGraphemeResult):
     pass
 

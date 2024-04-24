@@ -198,3 +198,10 @@ def is_numeric(chr: str) -> bool:
     if len(chr) != 1:
         raise TypeError('is_numeric() argument must be a unicode character, not str')
     return category(chr).startswith('N')
+
+
+def emoji_version(text: str) -> Optional[str]:
+    """
+    Returns the emoji version of the grapheme or None if it is not assigned to any version.
+    """
+    return MY_UNICODE_DATA['versions']['emoji'].get(text.replace('\ufe0f', ''))

@@ -94,6 +94,7 @@ def check_inspector_base_response(label,
             'confusables_other',
             'confusables_canonical',
             'description',
+            'emoji_version',
         ])
         assert type(grapheme['value']) == str
         assert type(grapheme['chars']) == list
@@ -116,7 +117,8 @@ def check_inspector_base_response(label,
                     'script',
                     'type',
                     'font_support_all_os',
-                    'description'
+                    'description',
+                    'emoji_version',
                 ])
 
         if truncate_confusables is not None:
@@ -138,7 +140,8 @@ def check_inspector_base_response(label,
                     'script',
                     'type',
                     'font_support_all_os',
-                    'description'
+                    'description',
+                    'emoji_version',
                 ])
 
         if truncate_chars is not None:
