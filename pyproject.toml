@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ens-label-inspector"
-version = "0.2.9"
+version = "0.2.10"
 readme = "README.md"
 license = "MIT"
 description = ""
