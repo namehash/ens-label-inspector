@@ -65,8 +65,6 @@ class InspectorCharResult(BaseModel):
         )
     unicode_version: Optional[str] = Field(description="Unicode Version of the character.\n"
                                                         "* `null` if the character is not assigned to any version")
-    emoji_version: Optional[str] = Field(description="Unicode Emoji Version of the character.\n"
-                                                     "* `null` if the character is not assigned to any version")
 
 
 class InspectorGraphemeResult(BaseModel):
@@ -107,8 +105,6 @@ class InspectorGraphemeResult(BaseModel):
     unicode_version: Optional[str] = Field(description="Unicode Version of the grapheme.\n"
                                                        "* `null` if the grapheme is not assigned to any version")
 
-    emoji_version: Optional[str] = Field(description="Unicode Emoji Version of the grapheme.\n"
-                                                     "* `null` if the grapheme is not assigned to any version")
 
 class InspectorConfusableGraphemeResult(InspectorGraphemeResult):
     pass

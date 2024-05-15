@@ -121,15 +121,17 @@ class GraphemeAnalysis(AnalysisBase):
 
     @field
     def unicode_version(self) -> Optional[str]:
-        highest_version = myunicode.unicode_version(self.grapheme[0])
+        # try to get the version of the whole grapheme
+        version = myunicode.unicode_min_version(self.grapheme)
+        if version is not None:
+            return version
+
+        # fallback to the highest version of the chars
+        highest_version = myunicode.unicode_min_version(self.grapheme[0])
         for char in self.grapheme[1:]:
-            version = myunicode.unicode_version(char)
+            version = myunicode.unicode_min_version(char)
             if version is None:
                 continue
             if highest_version is None or v2num(version) > v2num(highest_version):
                 highest_version = version
         return highest_version
-
-    @field
-    def emoji_version(self) -> Optional[str]:
-        return myunicode.emoji_version(self.grapheme)

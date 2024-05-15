@@ -433,21 +433,11 @@ def test_invisible_characters(analyse_label):
     [
         ('🪿', '15.0'),
         ('🩼', '14.0'),
+        ('🫏', '15.0'),
+        ('🫷🏼', '15.0'),
+        ('🧑‍🧑‍🧒', '15.1'),
     ]
 )
 def test_unicode_version(analyse_label, c, version):
     result = analyse_label(c)
     assert result['graphemes'][0]['unicode_version'] == version
-
-
-@pytest.mark.parametrize(
-    'emoji,version',
-    [
-        ('🫏', 'E15.0'),
-        ('🫷🏼', 'E15.0'),
-        ('🧑‍🧑‍🧒', 'E15.1'),
-    ]
-)
-def test_emoji_version(analyse_label, emoji, version):
-    result = analyse_label(emoji)
-    assert result['graphemes'][0]['emoji_version'] == version

@@ -498,3 +498,17 @@ def test_unicode_version(c, version):
 )
 def test_emoji_version(emoji, version):
     assert myunicode.emoji_version(emoji) == version
+
+
+@pytest.mark.parametrize(
+    'g,version',
+    [
+        ('🪿', '15.0'),
+        ('🩼', '14.0'),
+        ('🫏\ufe0f', '15.0'),
+        ('🫷🏼\ufe0f', '15.0'),
+        ('🧑‍🧑‍🧒\ufe0f', '15.1'),
+    ]
+)
+def test_unicode_min_version(g, version):
+    assert myunicode.unicode_min_version(g) == version

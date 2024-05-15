@@ -51,8 +51,4 @@ class CharAnalysis(AnalysisBase):
 
     @field
     def unicode_version(self) -> Optional[str]:
-        return myunicode.unicode_version(self._char)
-
-    @field
-    def emoji_version(self) -> Optional[str]:
-        return myunicode.emoji_version(self._char)
+        return myunicode.unicode_min_version(self._char)
