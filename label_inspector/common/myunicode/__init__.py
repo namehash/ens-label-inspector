@@ -15,6 +15,7 @@ from .myunicode import (
     is_numeric,
     unicode_version,
     emoji_version,
+    unicode_min_version,
 )
 
 from . import grapheme

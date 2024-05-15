@@ -78,7 +78,7 @@ def block_of(chr: str) -> Optional[str]:
 def script_of(text: str) -> Optional[str]:
     """
     Returns the script of text, or None if text has many non-neutral scripts.
-    
+
     Common and Inherited scripts are considered neutral.
 
     Empty string returns None.
@@ -212,3 +212,54 @@ def emoji_version(text: str) -> Optional[str]:
     Returns the emoji version of the grapheme or None if it is not assigned to any version.
     """
     return MY_UNICODE_DATA['versions']['emoji'].get(text.replace('\ufe0f', ''))
+
+
+def unicode_min_version(text: str) -> Optional[str]:
+    """
+    Returns the minimum unicode version required to display the grapheme.
+    """
+    univ = unicode_version(text)
+
+    if univ is not None:
+        # character has an explicit version
+        return univ
+
+    emov = emoji_version(text)
+
+    if emov is None:
+        return None
+    
+    emov = emov.removeprefix('E')
+
+    # Note: There were no version of Emoji 6.0-10.0.
+    # A decision was made in 2017 to align Emoji version numbers with their respective Unicode versions, starting with version 11.0.
+
+    # Note: Emoji 2.0, Emoji 12.1, and Emoji 13.1 were published separate from any update to the Unicode Standard.
+
+    if emov == '1.0':
+        return '8.0'
+
+    if emov == '2.0':
+        return '8.0'
+    
+    if emov == '3.0':
+        return '9.0'
+    
+    if emov == '4.0':
+        return '9.0'
+    
+    if emov == '5.0':
+        return '10.0'
+
+    if emov == '12.1':
+        return '12.0'
+
+    if emov == '13.1':
+        return '13.0'
+
+    major, minor = map(int, emov.split('.'))
+
+    if major >= 11:
+        return f'{major}.{minor}'
+
+    return None
