@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 def v2num(version: str) -> int:
-    return int(version.replace('.', ''))
+    return [int(x) for x in version.split('.')]
 
 
 @analysis_object
@@ -131,6 +131,8 @@ class GraphemeAnalysis(AnalysisBase):
         for char in self.grapheme[1:]:
             version = myunicode.unicode_min_version(char)
             if version is None:
+                # it's best to avoid returning null (for the UI)
+                # that's why we return the highest non-null version
                 continue
             if highest_version is None or v2num(version) > v2num(highest_version):
                 highest_version = version

@@ -441,3 +441,15 @@ def test_invisible_characters(analyse_label):
 def test_unicode_version(analyse_label, c, version):
     result = analyse_label(c)
     assert result['graphemes'][0]['unicode_version'] == version
+
+
+def test_unicode_null_version(analyse_label):
+    result = analyse_label('𞅊')
+    assert result['graphemes'][0]['unicode_version'] is None
+    assert result['graphemes'][0]['chars'][0]['unicode_version'] is None
+
+    # it's best to avoid null here (for the UI), that's why we return the highest non-null version
+    result = analyse_label('𞅊\u0328')
+    assert result['graphemes'][0]['unicode_version'] == '1.1'
+    assert result['graphemes'][0]['chars'][0]['unicode_version'] is None
+    assert result['graphemes'][0]['chars'][1]['unicode_version'] == '1.1'
