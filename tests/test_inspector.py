@@ -444,7 +444,7 @@ def test_unicode_version(analyse_label, c, version):
 
 
 def test_unicode_null_version(analyse_label):
-    result = analyse_label('𞅊')
+    result = analyse_label('𞅊')  # character disallowed by Unicode
     assert result['graphemes'][0]['unicode_version'] is None
     assert result['graphemes'][0]['chars'][0]['unicode_version'] is None
 
