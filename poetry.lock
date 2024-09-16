@@ -97,13 +97,13 @@ dev = ["coverage", "pytest (>=7.4.4)"]
 
 [[package]]
 name = "ens-normalize"
-version = "3.0.7"
+version = "3.0.8"
 description = "Ethereum Name Service (ENS) Name Normalizer"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "ens_normalize-3.0.7-py3-none-any.whl", hash = "sha256:2d37c7009e151c90dd481dc657a48007e88085fa65961319a5475dbe8bb6697a"},
-    {file = "ens_normalize-3.0.7.tar.gz", hash = "sha256:fdd6a7b865752f17fa522e23b8590c138832f87047d055070d1022353e01a57f"},
+    {file = "ens_normalize-3.0.8-py3-none-any.whl", hash = "sha256:536562ee19fe19acb325990c89c8ac7f2f5509f3138482033b0846bb69c3dc82"},
+    {file = "ens_normalize-3.0.8.tar.gz", hash = "sha256:bd6579d3eee2510a1d4c0d2ffba29bd8092dfa396e832eaae392b47378d5ff41"},
 ]
 
 [package.dependencies]
@@ -1055,4 +1055,4 @@ lambda = ["mangum"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.13"
-content-hash = "f12b078b49805319a271057d4a399092d032997937eee8ab3ea8e08a1bd32093"
+content-hash = "296badd0352195f2e8b94ef1e17796d66090a66d7e08d2c94a1cb153570a17e5"
