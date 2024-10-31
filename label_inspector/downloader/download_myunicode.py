@@ -6,7 +6,7 @@ from pathlib import Path
 import json
 
 
-UNICODE_VERSION = '15.1.0'
+UNICODE_VERSION = '16.0.0'
 EMOJI_UNICODE_VERSION = '.'.join(UNICODE_VERSION.split('.')[:2])
 
 ROOT_PATH = Path(__file__).resolve().parent.parent

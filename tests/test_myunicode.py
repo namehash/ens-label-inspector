@@ -382,7 +382,12 @@ def test_all_characters():
     SKIP_CHARACETRS = [
         '\u1734',  # HANUNOO SIGN PAMUDPOD
         # category was changed in Unicode 14 from Mn to Mc
+        '\U0001171e',  # Ahom Consonant Sign Medial Ra
+        # category was changed in Unicode 16 from Mn to Mc
     ]
+
+    assert myunicode.category('\u1734') == 'Mc'
+    assert myunicode.category('\U0001171e') == 'Mc'
 
     # from 0 to last block
     for char in map(chr, range(0x10FFFF + 1)):
