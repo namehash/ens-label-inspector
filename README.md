@@ -51,6 +51,10 @@ The Label Inspector includes a handler for [Amazon AWS Lambda](https://aws.amazo
 
 See the included [Dockerfile](/Dockerfile) for an example of how to build a Lambda deployment package.
 
+## For maintainers
+
+See [DEV.md](DEV.md).
+
 ## License
 
 Licensed under the MIT License, Copyright © 2023-present [NameHash Labs](https://namehashlabs.org).
